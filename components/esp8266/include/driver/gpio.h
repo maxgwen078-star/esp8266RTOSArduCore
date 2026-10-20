@@ -78,7 +78,6 @@ typedef enum {
     GPIO_NUM_15 = 15,   /*!< GPIO15, input and output */
     GPIO_NUM_16 = 16,   /*!< GPIO16, input and output */
     GPIO_NUM_MAX = 17,
-    /** @endcond */
 } gpio_num_t;
 
 typedef enum {
@@ -114,9 +113,6 @@ typedef enum {
     GPIO_PULLDOWN_ENABLE = 0x1,    /*!< Enable GPIO pull-down resistor  */
 } gpio_pulldown_t;
 
-/**
- * @brief Configuration parameters of GPIO pad for gpio_config function
- */
 typedef struct {
     uint32_t pin_bit_mask;          /*!< GPIO pin: set with bit mask, each bit maps to a GPIO */
     gpio_mode_t mode;               /*!< GPIO mode: set input/output mode */
@@ -128,240 +124,23 @@ typedef struct {
 typedef void (*gpio_isr_t)(void *);
 typedef void *gpio_isr_handle_t;
 
-/**
- * @brief GPIO common configuration
- *
- * Configure GPIO's Mode,pull-up,PullDown,IntrType
- *
- * @param  gpio_cfg  Pointer to GPIO configure struct
- *
- * @return
- *     - ESP_OK success
- *     - ESP_ERR_INVALID_ARG Parameter error
- */
 esp_err_t gpio_config(const gpio_config_t *gpio_cfg);
-
-/**
- * @brief  GPIO set interrupt trigger type
- *
- * @param  gpio_num GPIO number. If you want to set the trigger type of e.g. of GPIO12, gpio_num should be GPIO_NUM_12 (12);
- * @param  intr_type Interrupt type, select from gpio_int_type_t
- *
- * @return
- *     - ESP_OK  Success
- *     - ESP_ERR_INVALID_ARG Parameter error
- */
 esp_err_t gpio_set_intr_type(gpio_num_t gpio_num, gpio_int_type_t intr_type);
-
-/**
- * @brief  GPIO set output level
- *
- * @param  gpio_num GPIO number. If you want to set the output level of e.g. GPIO16, gpio_num should be GPIO_NUM_16 (16);
- * @param  level Output level. 0: low ; 1: high
- *
- * @return
- *     - ESP_OK Success
- *     - ESP_ERR_INVALID_ARG GPIO number error
- */
 esp_err_t gpio_set_level(gpio_num_t gpio_num, uint32_t level);
-
-/**
- * @brief  GPIO get input level
- *
- * @note   If the pad is not configured for input (or input and output) the returned value is always 0.
- *
- * @param  gpio_num GPIO number. If you want to get the logic level of e.g. pin GPIO16, gpio_num should be GPIO_NUM_16 (16);
- *
- * @return
- *     - 0 the GPIO input level is 0
- *     - 1 the GPIO input level is 1
- */
 int gpio_get_level(gpio_num_t gpio_num);
-
-/**
- * @brief  GPIO set direction
- *
- * Configure GPIO direction,such as output_only,input_only
- *
- * @param  gpio_num  Configure GPIO pins number, it should be GPIO number. If you want to set direction of e.g. GPIO16, gpio_num should be GPIO_NUM_16 (16);
- * @param  mode GPIO direction
- *
- * @return
- *     - ESP_OK Success
- *     - ESP_ERR_INVALID_ARG GPIO error
- */
 esp_err_t gpio_set_direction(gpio_num_t gpio_num, gpio_mode_t mode);
-
-/**
- * @brief  Configure GPIO pull-up/pull-down resistors
- *
- * @param  gpio_num GPIO number. If you want to set pull up or down mode for e.g. GPIO16, gpio_num should be GPIO_NUM_16 (16);
- * @param  pull GPIO pull up/down mode.
- *
- * @note   The GPIO of esp8266 can not be pulled down except RTC GPIO which can not be pulled up.
- *
- * @return
- *     - ESP_OK Success
- *     - ESP_ERR_INVALID_ARG : Parameter error
- */
 esp_err_t gpio_set_pull_mode(gpio_num_t gpio_num, gpio_pull_mode_t pull);
-
-/**
-  * @brief Enable GPIO wake-up function.
-  * 
-  * @note RTC IO can not use the wakeup function
-  *
-  * @param gpio_num GPIO number.
-  *
-  * @param intr_type GPIO wake-up type. Only GPIO_INTR_LOW_LEVEL or GPIO_INTR_HIGH_LEVEL can be used.
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_wakeup_enable(gpio_num_t gpio_num, gpio_int_type_t intr_type);
-
-/**
-  * @brief Disable GPIO wake-up function.
-  *
-  * @note RTC IO can not use the wakeup function
-  * 
-  * @param gpio_num GPIO number
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_wakeup_disable(gpio_num_t gpio_num);
-
-/**
- * @brief   Register GPIO interrupt handler, the handler is an ISR.
- *
- * This ISR function is called whenever any GPIO interrupt occurs. See
- * the alternative gpio_install_isr_service() and
- * gpio_isr_handler_add() API in order to have the driver support
- * per-GPIO ISRs.
- *
- * @param  fn  Interrupt handler function.
- * @param  no_use In order to be compatible with esp32, the parameter has no practical meaning and can be filled with 0.
- * @param  arg  Parameter for handler function
- * @param  handle_no_use Pointer to return handle. In order to be compatible with esp32,the parameter has no practical meaning and can be filled with NULL.
- *
- * @return
- *     - ESP_OK Success ;
- *     - ESP_ERR_INVALID_ARG GPIO error
- *     - ESP_ERR_NOT_FOUND No free interrupt found with the specified flags
- */
 esp_err_t gpio_isr_register(void (*fn)(void *), void *arg, int no_use, gpio_isr_handle_t *handle_no_use);
-
-/**
-  * @brief Enable pull-up on GPIO.
-  *
-  * @param gpio_num GPIO number
-  *
-  * @note  The GPIO of esp8266 can not be pulled down except RTC GPIO which can not be pulled up.
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_pullup_en(gpio_num_t gpio_num);
-
-/**
-  * @brief Disable pull-up on GPIO.
-  *
-  * @param gpio_num GPIO number
-  *
-  * @note  The GPIO of esp8266 can not be pulled down except RTC GPIO which can not be pulled up.
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_pullup_dis(gpio_num_t gpio_num);
-
-/**
-  * @brief Enable pull-down on GPIO.
-  *
-  * @param gpio_num GPIO number
-  *
-  * @note  The GPIO of esp8266 can not be pulled down except RTC GPIO which can not be pulled up.
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_pulldown_en(gpio_num_t gpio_num);
-
-/**
-  * @brief Disable pull-down on GPIO.
-  *
-  * @param gpio_num GPIO number
-  *
-  * @note  The GPIO of esp8266 can not be pulled down except RTC GPIO which can not be pulled up.
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_pulldown_dis(gpio_num_t gpio_num);
-
-/**
-  * @brief Install the driver's GPIO ISR handler service, which allows per-pin GPIO interrupt handlers.
-  *
-  * This function is incompatible with gpio_isr_register() - if that function is used, a single global ISR is registered for all GPIO interrupts. If this function is used, the ISR service provides a global GPIO ISR and individual pin handlers are registered via the gpio_isr_handler_add() function.
-  *
-  * @param  no_use In order to be compatible with esp32, the parameter has no practical meaning and can be filled with 0.
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_NO_MEM No memory to install this service
-  *     - ESP_ERR_INVALID_STATE ISR service already installed.
-  *     - ESP_ERR_NOT_FOUND No free interrupt found with the specified flags
-  *     - ESP_ERR_INVALID_ARG GPIO error
-  */
 esp_err_t gpio_install_isr_service(int no_use);
-
-/**
-  * @brief Uninstall the driver's GPIO ISR service, freeing related resources.
-  */
 void gpio_uninstall_isr_service();
-
-/**
-  * @brief Add ISR handler for the corresponding GPIO pin.
-  *
-  * Call this function after using gpio_install_isr_service() to
-  * install the driver's GPIO ISR handler service.
-  *
-  * This ISR handler will be called from an ISR. So there is a stack
-  * size limit (configurable as "ISR stack size" in menuconfig). This
-  * limit is smaller compared to a global GPIO interrupt handler due
-  * to the additional level of indirection.
-  *
-  * @param gpio_num GPIO number
-  * @param isr_handler ISR handler function for the corresponding GPIO number.
-  * @param args parameter for ISR handler.
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_STATE Wrong state, the ISR service has not been initialized.
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_isr_handler_add(gpio_num_t gpio_num, gpio_isr_t isr_handler, void *args);
-
-/**
-  * @brief Remove ISR handler for the corresponding GPIO pin.
-  *
-  * @param gpio_num GPIO number
-  *
-  * @return
-  *     - ESP_OK Success
-  *     - ESP_ERR_INVALID_STATE Wrong state, the ISR service has not been initialized.
-  *     - ESP_ERR_INVALID_ARG Parameter error
-  */
 esp_err_t gpio_isr_handler_remove(gpio_num_t gpio_num);
-
-
 
 #ifdef __cplusplus
 }

@@ -16,6 +16,13 @@
 # Convenience functions for commonly used data type conversions
 
 
+# Auto-injected sys.path fix (portable build)
+import os as _os_syspath_patch
+import sys as _sys_syspath_patch
+_HERE_SYSPATH_PATCH = _os_syspath_patch.path.dirname(_os_syspath_patch.path.abspath(__file__))
+if _HERE_SYSPATH_PATCH not in _sys_syspath_patch.path:
+    _sys_syspath_patch.path.insert(0, _HERE_SYSPATH_PATCH)
+# End of auto-injected sys.path fix
 def str_to_hexstr(string):
     # Form hexstr by appending ASCII codes (in hex) corresponding to
     # each character in the input string

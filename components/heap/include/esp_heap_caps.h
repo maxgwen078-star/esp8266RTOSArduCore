@@ -195,6 +195,8 @@ void *_heap_caps_realloc(void *mem, size_t newsize, uint32_t caps, const char *f
 
 void *_heap_caps_zalloc(size_t size, uint32_t caps, const char *file, size_t line);
 
+size_t heap_caps_get_largest_free_block(uint32_t caps);
+
 #ifdef __cplusplus
 }
 #endif

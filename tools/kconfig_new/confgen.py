@@ -21,6 +21,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import print_function
+# Auto-injected sys.path fix (portable build)
+import os as _os_syspath_patch
+import sys as _sys_syspath_patch
+_HERE_SYSPATH_PATCH = _os_syspath_patch.path.dirname(_os_syspath_patch.path.abspath(__file__))
+if _HERE_SYSPATH_PATCH not in _sys_syspath_patch.path:
+    _sys_syspath_patch.path.insert(0, _HERE_SYSPATH_PATCH)
+# End of auto-injected sys.path fix
+import os
+import sys
+_HERE = os.path.dirname(os.path.abspath(__file__))
+if _HERE not in sys.path:
+    sys.path.insert(0, _HERE)
+
 import argparse
 import fnmatch
 import json

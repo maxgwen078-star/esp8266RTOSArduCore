@@ -9,6 +9,13 @@
 # versioneer-0.12 (https://github.com/warner/python-versioneer)
 
 # these strings will be replaced by git during git-archive
+# Auto-injected sys.path fix (portable build)
+import os as _os_syspath_patch
+import sys as _sys_syspath_patch
+_HERE_SYSPATH_PATCH = _os_syspath_patch.path.dirname(_os_syspath_patch.path.abspath(__file__))
+if _HERE_SYSPATH_PATCH not in _sys_syspath_patch.path:
+    _sys_syspath_patch.path.insert(0, _HERE_SYSPATH_PATCH)
+# End of auto-injected sys.path fix
 git_refnames = " (tag: python-ecdsa-0.13)"
 git_full = "5a6fc047222cf21ad89f6cbf8782d0f1e3ddacda"
 

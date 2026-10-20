@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+# Auto-injected sys.path fix (portable build)
+import os as _os_syspath_patch
+import sys as _sys_syspath_patch
+_HERE_SYSPATH_PATCH = _os_syspath_patch.path.dirname(_os_syspath_patch.path.abspath(__file__))
+if _HERE_SYSPATH_PATCH not in _sys_syspath_patch.path:
+    _sys_syspath_patch.path.insert(0, _HERE_SYSPATH_PATCH)
+# End of auto-injected sys.path fix
 import os
 import sys
 import argparse
@@ -13,33 +20,39 @@ def main():
     parser.add_argument('-x', '--xtensa', required=True)
     parser.add_argument('-m', '--max_size', required=False, default="1048576")
     parser.add_argument('-f', '--flash_size', required=False, default="Unknown")
+    # Acceptés mais non utilisés ici (cohérence avec platform.txt)
+    parser.add_argument('-C', '--cmake-dir',  default=None)
+    parser.add_argument('-G', '--gcc-dir',    default=None)
+    parser.add_argument('-M', '--make-dir',   default=None)
+    parser.add_argument('-N', '--ninja-dir',  default=None)
+    parser.add_argument('-P', '--python-dir', default=None)
     args, unknown = parser.parse_known_args()
 
     work_dir = os.path.join(args.build, "idfTemplate")
 
     print("[Size] Physical Flash Size Selected: {}".format(args.flash_size), file=sys.stderr)
     print("[Size] Maximum App Partition Size: {} bytes".format(args.max_size), file=sys.stderr)
-    
+
     build_folder = os.path.join(work_dir, "build")
     elf_files = glob.glob(os.path.join(build_folder, "*.elf"))
     elf_files = [f for f in elf_files if not f.endswith("bootloader.elf")]
-    
+
     if not elf_files:
         print("[Size Error] No ELF application file found in build directory.", file=sys.stderr)
         sys.exit(0)
-        
+
     elf_path = elf_files[0]
     size_tool = os.path.join(args.xtensa, "bin", "xtensa-lx106-elf-size.exe")
 
     try:
         p_size = subprocess.Popen([size_tool, "-A", elf_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output, _ = p_size.communicate()
-        
+
         if hasattr(output, 'decode'):
             output = output.decode('utf-8', 'ignore')
 
         print("--- MEMORY SECTIONS USED ---", file=sys.stderr)
-        
+
         total_size = 0
         for line in output.splitlines():
             parts = line.split()
@@ -53,9 +66,9 @@ def main():
                             total_size += size
                 except ValueError:
                     pass
-                    
+
         print("----------------------------", file=sys.stderr)
-        
+
         # Output exactly what Arduino expects on stdout for the Regex
         print("Total image size: {} bytes".format(total_size))
 

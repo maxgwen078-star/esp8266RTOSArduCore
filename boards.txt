@@ -82,6 +82,7 @@ generic.menu.eesz.2M.upload.maximum_size=1043456
 generic.menu.eesz.4M=4MB (FS:none OTA:~1019KB)
 generic.menu.eesz.4M.build.flash_size=4M
 generic.menu.eesz.4M.build.flash_size_arg=4MB
+generic.menu.eesz.4M.build.partition_scheme=fsnone
 generic.menu.eesz.4M.upload.maximum_size=1043456
 
 generic.menu.eesz.8M=8MB (FS:none OTA:~1019KB)
@@ -100,7 +101,7 @@ generic.menu.baud.921600=921600
 generic.menu.baud.921600.upload.speed=921600
 
 # --- Generic ESP8285 Module (1MB DOUT) ---
-esp8285.name=Generic ESP8285 Module
+esp8285.name=Generic ESP8285 Module [RTOS]
 esp8285.build.board=ESP8285_GENERIC
 esp8285.build.mcu=esp8266
 esp8285.build.core=esp8266
@@ -161,7 +162,7 @@ esp8285.menu.lvl.Verbose.build.arduhal_log_level=5
 # ==============================================================================
 
 # --- NodeMCU 1.0 (ESP-12E) ---
-nodemcu.name=NodeMCU 1.0 (ESP-12E Module)
+nodemcu.name=NodeMCU 1.0 (ESP-12E Module) [RTOS]
 nodemcu.build.board=ESP8266_NODEMCU
 nodemcu.build.mcu=esp8266
 nodemcu.build.core=esp8266
@@ -175,21 +176,25 @@ nodemcu.build.flash_freq=40
 nodemcu.menu.eesz.4M2M=4MB (FS:2MB OTA:~1019KB)
 nodemcu.menu.eesz.4M2M.build.flash_size=4M
 nodemcu.menu.eesz.4M2M.build.flash_size_arg=4MB
+nodemcu.menu.eesz.4M2M.build.partition_scheme=fs2mb
 nodemcu.menu.eesz.4M2M.upload.maximum_size=1043456
 
 nodemcu.menu.eesz.4M3M=4MB (FS:3MB OTA:~512KB)
 nodemcu.menu.eesz.4M3M.build.flash_size=4M
 nodemcu.menu.eesz.4M3M.build.flash_size_arg=4MB
+nodemcu.menu.eesz.4M3M.build.partition_scheme=fs3mb
 nodemcu.menu.eesz.4M3M.upload.maximum_size=524288
 
 nodemcu.menu.eesz.4M1M=4MB (FS:1MB OTA:~1019KB)
 nodemcu.menu.eesz.4M1M.build.flash_size=4M
 nodemcu.menu.eesz.4M1M.build.flash_size_arg=4MB
+nodemcu.menu.eesz.4M1M.build.partition_scheme=fs1mb
 nodemcu.menu.eesz.4M1M.upload.maximum_size=1043456
 
 nodemcu.menu.eesz.4M=4MB (FS:none OTA:~1019KB)
 nodemcu.menu.eesz.4M.build.flash_size=4M
 nodemcu.menu.eesz.4M.build.flash_size_arg=4MB
+nodemcu.menu.eesz.4M.build.partition_scheme=fsnone
 nodemcu.menu.eesz.4M.upload.maximum_size=1043456
 
 nodemcu.menu.xtal.80=80 MHz
@@ -212,7 +217,7 @@ nodemcu.menu.lvl.Verbose.build.arduhal_log_level=5
 
 
 # --- Wemos D1 Mini ---
-d1_mini.name=LOLIN(WEMOS) D1 R2 & mini
+d1_mini.name=LOLIN(WEMOS) D1 R2 & mini [RTOS]
 d1_mini.build.board=ESP8266_WEMOS_D1MINI
 d1_mini.build.mcu=esp8266
 d1_mini.build.core=esp8266
@@ -226,21 +231,25 @@ d1_mini.build.flash_freq=40
 d1_mini.menu.eesz.4M2M=4MB (FS:2MB OTA:~1019KB)
 d1_mini.menu.eesz.4M2M.build.flash_size=4M
 d1_mini.menu.eesz.4M2M.build.flash_size_arg=4MB
+d1_mini.menu.eesz.4M2M.build.partition_scheme=fs2mb
 d1_mini.menu.eesz.4M2M.upload.maximum_size=1043456
 
 d1_mini.menu.eesz.4M3M=4MB (FS:3MB OTA:~512KB)
 d1_mini.menu.eesz.4M3M.build.flash_size=4M
 d1_mini.menu.eesz.4M3M.build.flash_size_arg=4MB
+d1_mini.menu.eesz.4M3M.build.partition_scheme=fs3mb
 d1_mini.menu.eesz.4M3M.upload.maximum_size=524288
 
 d1_mini.menu.eesz.4M1M=4MB (FS:1MB OTA:~1019KB)
 d1_mini.menu.eesz.4M1M.build.flash_size=4M
 d1_mini.menu.eesz.4M1M.build.flash_size_arg=4MB
+d1_mini.menu.eesz.4M1M.build.partition_scheme=fs1mb
 d1_mini.menu.eesz.4M1M.upload.maximum_size=1043456
 
 d1_mini.menu.eesz.4M=4MB (FS:none OTA:~1019KB)
 d1_mini.menu.eesz.4M.build.flash_size=4M
 d1_mini.menu.eesz.4M.build.flash_size_arg=4MB
+d1_mini.menu.eesz.4M.build.partition_scheme=fsnone
 d1_mini.menu.eesz.4M.upload.maximum_size=1043456
 
 d1_mini.menu.xtal.80=80 MHz
@@ -263,7 +272,7 @@ d1_mini.menu.lvl.Verbose.build.arduhal_log_level=5
 
 
 # --- Adafruit Feather HUZZAH ESP8266 ---
-adafruit.name=Adafruit Feather HUZZAH ESP8266
+adafruit.name=Adafruit Feather HUZZAH ESP8266 [RTOS]
 adafruit.build.board=ESP8266_ADAFRUIT_HUZZAH
 adafruit.build.mcu=esp8266
 adafruit.build.core=esp8266
@@ -277,21 +286,25 @@ adafruit.build.flash_freq=40
 adafruit.menu.eesz.4M2M=4MB (FS:2MB OTA:~1019KB)
 adafruit.menu.eesz.4M2M.build.flash_size=4M
 adafruit.menu.eesz.4M2M.build.flash_size_arg=4MB
+adafruit.menu.eesz.4M2M.build.partition_scheme=fs2mb
 adafruit.menu.eesz.4M2M.upload.maximum_size=1043456
 
 adafruit.menu.eesz.4M3M=4MB (FS:3MB OTA:~512KB)
 adafruit.menu.eesz.4M3M.build.flash_size=4M
 adafruit.menu.eesz.4M3M.build.flash_size_arg=4MB
+adafruit.menu.eesz.4M3M.build.partition_scheme=fs3mb
 adafruit.menu.eesz.4M3M.upload.maximum_size=524288
 
 adafruit.menu.eesz.4M1M=4MB (FS:1MB OTA:~1019KB)
 adafruit.menu.eesz.4M1M.build.flash_size=4M
 adafruit.menu.eesz.4M1M.build.flash_size_arg=4MB
+adafruit.menu.eesz.4M1M.build.partition_scheme=fs1mb
 adafruit.menu.eesz.4M1M.upload.maximum_size=1043456
 
 adafruit.menu.eesz.4M=4MB (FS:none OTA:~1019KB)
 adafruit.menu.eesz.4M.build.flash_size=4M
 adafruit.menu.eesz.4M.build.flash_size_arg=4MB
+adafruit.menu.eesz.4M.build.partition_scheme=fsnone
 adafruit.menu.eesz.4M.upload.maximum_size=1043456
 
 adafruit.menu.xtal.80=80 MHz
@@ -318,7 +331,7 @@ adafruit.menu.lvl.Verbose.build.arduhal_log_level=5
 # ==============================================================================
 
 # --- SparkFun ESP8266 Thing (512KB) ---
-thing.name=SparkFun ESP8266 Thing
+thing.name=SparkFun ESP8266 Thing [RTOS]
 thing.build.board=ESP8266_SPARKFUN_THING
 thing.build.mcu=esp8266
 thing.build.core=esp8266
@@ -359,7 +372,7 @@ thing.menu.lvl.Verbose.build.arduhal_log_level=5
 
 
 # --- ITEAD Sonoff (1MB DOUT) ---
-itead.name=ITEAD Sonoff
+itead.name=ITEAD Sonoff [RTOS]
 itead.build.board=ESP8266_SONOFF
 itead.build.mcu=esp8266
 itead.build.core=esp8266
@@ -415,7 +428,7 @@ itead.menu.lvl.Verbose.build.arduhal_log_level=5
 
 
 # --- WifInfo (1MB) ---
-wifinfo.name=WifInfo
+wifinfo.name=WifInfo [RTOS]
 wifinfo.build.board=ESP8266_WIFINFO
 wifinfo.build.mcu=esp8266
 wifinfo.build.core=esp8266
@@ -471,7 +484,7 @@ wifinfo.menu.lvl.Verbose.build.arduhal_log_level=5
 
 
 # --- Olimex MOD-WIFI (2MB) ---
-modwifi.name=Olimex MOD-WIFI
+modwifi.name=Olimex MOD-WIFI [RTOS]
 modwifi.build.board=ESP8266_MODWIFI
 modwifi.build.mcu=esp8266
 modwifi.build.core=esp8266
@@ -521,87 +534,87 @@ modwifi.menu.lvl.Verbose.build.arduhal_log_level=5
 # ==============================================================================
 
 # --- Definición Base y Variantes ---
-d1.name=Wemos D1 R1
+d1.name=Wemos D1 R1 [RTOS]
 d1.build.board=ESP8266RTOS_D1
 d1.build.variant=d1
 
-espino.name=ESPino
+espino.name=ESPino [RTOS]
 espino.build.board=ESP8266RTOS_ESPINO
 espino.build.variant=espino
 
-inventone.name=Invent One
+inventone.name=Invent One [RTOS]
 inventone.build.board=ESP8266RTOS_INVENTONE
 inventone.build.variant=inventone
 
-phoenix_v1.name=Phoenix 1.0
+phoenix_v1.name=Phoenix 1.0 [RTOS]
 phoenix_v1.build.board=ESP8266RTOS_PHOENIX_V1
 phoenix_v1.build.variant=phoenix_v1
 
-agruminolemonv4.name=Agrumino Lemon v4
+agruminolemonv4.name=Agrumino Lemon v4 [RTOS]
 agruminolemonv4.build.board=ESP8266RTOS_AGRUMINOLEMONV4
 agruminolemonv4.build.variant=agruminolemonv4
 
-eduinowifi.name=Eduino WiFi
+eduinowifi.name=Eduino WiFi [RTOS]
 eduinowifi.build.board=ESP8266RTOS_EDUINOWIFI
 eduinowifi.build.variant=eduinowifi
 
-espinotee.name=ThaiEasyElec ESPino
+espinotee.name=ThaiEasyElec ESPino [RTOS]
 espinotee.build.board=ESP8266RTOS_ESPINOTEE
 espinotee.build.variant=espinotee
 
-phoenix_v2.name=Phoenix 2.0
+phoenix_v2.name=Phoenix 2.0 [RTOS]
 phoenix_v2.build.board=ESP8266RTOS_PHOENIX_V2
 phoenix_v2.build.variant=phoenix_v2
 
-wifio.name=Wifio
+wifio.name=Wifio [RTOS]
 wifio.build.board=ESP8266RTOS_WIFIO
 wifio.build.variant=wifio
 
-arduino_spi.name=Arduino WiFi Shield (SPI)
+arduino_spi.name=Arduino WiFi Shield (SPI) [RTOS]
 arduino_spi.build.board=ESP8266RTOS_ARDUINO_SPI
 arduino_spi.build.variant=arduino_spi
 
-espresso_lite_v1.name=ESPresso Lite 1.0
+espresso_lite_v1.name=ESPresso Lite 1.0 [RTOS]
 espresso_lite_v1.build.board=ESP8266RTOS_ESPRESSO_LITE_V1
 espresso_lite_v1.build.variant=espresso_lite_v1
 
-wifi_slot.name=Amperka WiFi Slot
+wifi_slot.name=Amperka WiFi Slot [RTOS]
 wifi_slot.build.board=ESP8266RTOS_WIFI_SLOT
 wifi_slot.build.variant=wifi_slot
 
-arduino_uart.name=Arduino WiFi Shield (UART)
+arduino_uart.name=Arduino WiFi Shield (UART) [RTOS]
 arduino_uart.build.board=ESP8266RTOS_ARDUINO_UART
 arduino_uart.build.variant=arduino_uart
 
-ESPDuino.name=ESPDuino
+ESPDuino.name=ESPDuino [RTOS]
 ESPDuino.build.board=ESP8266RTOS_ESPDUINO
 ESPDuino.build.variant=ESPDuino
 
-espresso_lite_v2.name=ESPresso Lite 2.0
+espresso_lite_v2.name=ESPresso Lite 2.0 [RTOS]
 espresso_lite_v2.build.board=ESP8266RTOS_ESPRESSO_LITE_V2
 espresso_lite_v2.build.variant=espresso_lite_v2
 
-wifiduino.name=Wifiduino
+wifiduino.name=Wifiduino [RTOS]
 wifiduino.build.board=ESP8266RTOS_WIFIDUINO
 wifiduino.build.variant=wifiduino
 
-wiolink.name=Seeed Wio Link
+wiolink.name=Seeed Wio Link [RTOS]
 wiolink.build.board=ESP8266RTOS_WIOLINK
 wiolink.build.variant=wiolink
 
-espectro.name=Espectro Core
+espectro.name=Espectro Core [RTOS]
 espectro.build.board=ESP8266RTOS_ESPECTRO
 espectro.build.variant=espectro
 
-oak.name=Digistump Oak
+oak.name=Digistump Oak [RTOS]
 oak.build.board=ESP8266RTOS_OAK
 oak.build.variant=oak
 
-wifi_kit_8.name=Heltec WiFi Kit 8
+wifi_kit_8.name=Heltec WiFi Kit 8 [RTOS]
 wifi_kit_8.build.board=ESP8266RTOS_WIFI_KIT_8
 wifi_kit_8.build.variant=wifi_kit_8
 
-xinabox.name=XinaBox CW01
+xinabox.name=XinaBox CW01 [RTOS]
 xinabox.build.board=ESP8266RTOS_XINABOX
 xinabox.build.variant=xinabox
 
@@ -873,92 +886,176 @@ wifi_kit_8.menu.eesz.4M.build.flash_size=4M
 xinabox.menu.eesz.4M.build.flash_size=4M
 
 d1.menu.eesz.4M2M.build.flash_size_arg=4MB
+d1.menu.eesz.4M2M.build.partition_scheme=fs2mb
 espino.menu.eesz.4M2M.build.flash_size_arg=4MB
+espino.menu.eesz.4M2M.build.partition_scheme=fs2mb
 inventone.menu.eesz.4M2M.build.flash_size_arg=4MB
+inventone.menu.eesz.4M2M.build.partition_scheme=fs2mb
 phoenix_v1.menu.eesz.4M2M.build.flash_size_arg=4MB
+phoenix_v1.menu.eesz.4M2M.build.partition_scheme=fs2mb
 agruminolemonv4.menu.eesz.4M2M.build.flash_size_arg=4MB
+agruminolemonv4.menu.eesz.4M2M.build.partition_scheme=fs2mb
 eduinowifi.menu.eesz.4M2M.build.flash_size_arg=4MB
+eduinowifi.menu.eesz.4M2M.build.partition_scheme=fs2mb
 espinotee.menu.eesz.4M2M.build.flash_size_arg=4MB
+espinotee.menu.eesz.4M2M.build.partition_scheme=fs2mb
 phoenix_v2.menu.eesz.4M2M.build.flash_size_arg=4MB
+phoenix_v2.menu.eesz.4M2M.build.partition_scheme=fs2mb
 wifio.menu.eesz.4M2M.build.flash_size_arg=4MB
+wifio.menu.eesz.4M2M.build.partition_scheme=fs2mb
 arduino_spi.menu.eesz.4M2M.build.flash_size_arg=4MB
+arduino_spi.menu.eesz.4M2M.build.partition_scheme=fs2mb
 espresso_lite_v1.menu.eesz.4M2M.build.flash_size_arg=4MB
+espresso_lite_v1.menu.eesz.4M2M.build.partition_scheme=fs2mb
 wifi_slot.menu.eesz.4M2M.build.flash_size_arg=4MB
+wifi_slot.menu.eesz.4M2M.build.partition_scheme=fs2mb
 arduino_uart.menu.eesz.4M2M.build.flash_size_arg=4MB
+arduino_uart.menu.eesz.4M2M.build.partition_scheme=fs2mb
 ESPDuino.menu.eesz.4M2M.build.flash_size_arg=4MB
+ESPDuino.menu.eesz.4M2M.build.partition_scheme=fs2mb
 espresso_lite_v2.menu.eesz.4M2M.build.flash_size_arg=4MB
+espresso_lite_v2.menu.eesz.4M2M.build.partition_scheme=fs2mb
 wifiduino.menu.eesz.4M2M.build.flash_size_arg=4MB
+wifiduino.menu.eesz.4M2M.build.partition_scheme=fs2mb
 wiolink.menu.eesz.4M2M.build.flash_size_arg=4MB
+wiolink.menu.eesz.4M2M.build.partition_scheme=fs2mb
 espectro.menu.eesz.4M2M.build.flash_size_arg=4MB
+espectro.menu.eesz.4M2M.build.partition_scheme=fs2mb
 oak.menu.eesz.4M2M.build.flash_size_arg=4MB
+oak.menu.eesz.4M2M.build.partition_scheme=fs2mb
 wifi_kit_8.menu.eesz.4M2M.build.flash_size_arg=4MB
+wifi_kit_8.menu.eesz.4M2M.build.partition_scheme=fs2mb
 xinabox.menu.eesz.4M2M.build.flash_size_arg=4MB
+xinabox.menu.eesz.4M2M.build.partition_scheme=fs2mb
 
 d1.menu.eesz.4M3M.build.flash_size_arg=4MB
+d1.menu.eesz.4M3M.build.partition_scheme=fs3mb
 espino.menu.eesz.4M3M.build.flash_size_arg=4MB
+espino.menu.eesz.4M3M.build.partition_scheme=fs3mb
 inventone.menu.eesz.4M3M.build.flash_size_arg=4MB
+inventone.menu.eesz.4M3M.build.partition_scheme=fs3mb
 phoenix_v1.menu.eesz.4M3M.build.flash_size_arg=4MB
+phoenix_v1.menu.eesz.4M3M.build.partition_scheme=fs3mb
 agruminolemonv4.menu.eesz.4M3M.build.flash_size_arg=4MB
+agruminolemonv4.menu.eesz.4M3M.build.partition_scheme=fs3mb
 eduinowifi.menu.eesz.4M3M.build.flash_size_arg=4MB
+eduinowifi.menu.eesz.4M3M.build.partition_scheme=fs3mb
 espinotee.menu.eesz.4M3M.build.flash_size_arg=4MB
+espinotee.menu.eesz.4M3M.build.partition_scheme=fs3mb
 phoenix_v2.menu.eesz.4M3M.build.flash_size_arg=4MB
+phoenix_v2.menu.eesz.4M3M.build.partition_scheme=fs3mb
 wifio.menu.eesz.4M3M.build.flash_size_arg=4MB
+wifio.menu.eesz.4M3M.build.partition_scheme=fs3mb
 arduino_spi.menu.eesz.4M3M.build.flash_size_arg=4MB
+arduino_spi.menu.eesz.4M3M.build.partition_scheme=fs3mb
 espresso_lite_v1.menu.eesz.4M3M.build.flash_size_arg=4MB
+espresso_lite_v1.menu.eesz.4M3M.build.partition_scheme=fs3mb
 wifi_slot.menu.eesz.4M3M.build.flash_size_arg=4MB
+wifi_slot.menu.eesz.4M3M.build.partition_scheme=fs3mb
 arduino_uart.menu.eesz.4M3M.build.flash_size_arg=4MB
+arduino_uart.menu.eesz.4M3M.build.partition_scheme=fs3mb
 ESPDuino.menu.eesz.4M3M.build.flash_size_arg=4MB
+ESPDuino.menu.eesz.4M3M.build.partition_scheme=fs3mb
 espresso_lite_v2.menu.eesz.4M3M.build.flash_size_arg=4MB
+espresso_lite_v2.menu.eesz.4M3M.build.partition_scheme=fs3mb
 wifiduino.menu.eesz.4M3M.build.flash_size_arg=4MB
+wifiduino.menu.eesz.4M3M.build.partition_scheme=fs3mb
 wiolink.menu.eesz.4M3M.build.flash_size_arg=4MB
+wiolink.menu.eesz.4M3M.build.partition_scheme=fs3mb
 espectro.menu.eesz.4M3M.build.flash_size_arg=4MB
+espectro.menu.eesz.4M3M.build.partition_scheme=fs3mb
 oak.menu.eesz.4M3M.build.flash_size_arg=4MB
+oak.menu.eesz.4M3M.build.partition_scheme=fs3mb
 wifi_kit_8.menu.eesz.4M3M.build.flash_size_arg=4MB
+wifi_kit_8.menu.eesz.4M3M.build.partition_scheme=fs3mb
 xinabox.menu.eesz.4M3M.build.flash_size_arg=4MB
+xinabox.menu.eesz.4M3M.build.partition_scheme=fs3mb
 
 d1.menu.eesz.4M1M.build.flash_size_arg=4MB
+d1.menu.eesz.4M1M.build.partition_scheme=fs1mb
 espino.menu.eesz.4M1M.build.flash_size_arg=4MB
+espino.menu.eesz.4M1M.build.partition_scheme=fs1mb
 inventone.menu.eesz.4M1M.build.flash_size_arg=4MB
+inventone.menu.eesz.4M1M.build.partition_scheme=fs1mb
 phoenix_v1.menu.eesz.4M1M.build.flash_size_arg=4MB
+phoenix_v1.menu.eesz.4M1M.build.partition_scheme=fs1mb
 agruminolemonv4.menu.eesz.4M1M.build.flash_size_arg=4MB
+agruminolemonv4.menu.eesz.4M1M.build.partition_scheme=fs1mb
 eduinowifi.menu.eesz.4M1M.build.flash_size_arg=4MB
+eduinowifi.menu.eesz.4M1M.build.partition_scheme=fs1mb
 espinotee.menu.eesz.4M1M.build.flash_size_arg=4MB
+espinotee.menu.eesz.4M1M.build.partition_scheme=fs1mb
 phoenix_v2.menu.eesz.4M1M.build.flash_size_arg=4MB
+phoenix_v2.menu.eesz.4M1M.build.partition_scheme=fs1mb
 wifio.menu.eesz.4M1M.build.flash_size_arg=4MB
+wifio.menu.eesz.4M1M.build.partition_scheme=fs1mb
 arduino_spi.menu.eesz.4M1M.build.flash_size_arg=4MB
+arduino_spi.menu.eesz.4M1M.build.partition_scheme=fs1mb
 espresso_lite_v1.menu.eesz.4M1M.build.flash_size_arg=4MB
+espresso_lite_v1.menu.eesz.4M1M.build.partition_scheme=fs1mb
 wifi_slot.menu.eesz.4M1M.build.flash_size_arg=4MB
+wifi_slot.menu.eesz.4M1M.build.partition_scheme=fs1mb
 arduino_uart.menu.eesz.4M1M.build.flash_size_arg=4MB
+arduino_uart.menu.eesz.4M1M.build.partition_scheme=fs1mb
 ESPDuino.menu.eesz.4M1M.build.flash_size_arg=4MB
+ESPDuino.menu.eesz.4M1M.build.partition_scheme=fs1mb
 espresso_lite_v2.menu.eesz.4M1M.build.flash_size_arg=4MB
+espresso_lite_v2.menu.eesz.4M1M.build.partition_scheme=fs1mb
 wifiduino.menu.eesz.4M1M.build.flash_size_arg=4MB
+wifiduino.menu.eesz.4M1M.build.partition_scheme=fs1mb
 wiolink.menu.eesz.4M1M.build.flash_size_arg=4MB
+wiolink.menu.eesz.4M1M.build.partition_scheme=fs1mb
 espectro.menu.eesz.4M1M.build.flash_size_arg=4MB
+espectro.menu.eesz.4M1M.build.partition_scheme=fs1mb
 oak.menu.eesz.4M1M.build.flash_size_arg=4MB
+oak.menu.eesz.4M1M.build.partition_scheme=fs1mb
 wifi_kit_8.menu.eesz.4M1M.build.flash_size_arg=4MB
+wifi_kit_8.menu.eesz.4M1M.build.partition_scheme=fs1mb
 xinabox.menu.eesz.4M1M.build.flash_size_arg=4MB
+xinabox.menu.eesz.4M1M.build.partition_scheme=fs1mb
 
 d1.menu.eesz.4M.build.flash_size_arg=4MB
+d1.menu.eesz.4M.build.partition_scheme=fsnone
 espino.menu.eesz.4M.build.flash_size_arg=4MB
+espino.menu.eesz.4M.build.partition_scheme=fsnone
 inventone.menu.eesz.4M.build.flash_size_arg=4MB
+inventone.menu.eesz.4M.build.partition_scheme=fsnone
 phoenix_v1.menu.eesz.4M.build.flash_size_arg=4MB
+phoenix_v1.menu.eesz.4M.build.partition_scheme=fsnone
 agruminolemonv4.menu.eesz.4M.build.flash_size_arg=4MB
+agruminolemonv4.menu.eesz.4M.build.partition_scheme=fsnone
 eduinowifi.menu.eesz.4M.build.flash_size_arg=4MB
+eduinowifi.menu.eesz.4M.build.partition_scheme=fsnone
 espinotee.menu.eesz.4M.build.flash_size_arg=4MB
+espinotee.menu.eesz.4M.build.partition_scheme=fsnone
 phoenix_v2.menu.eesz.4M.build.flash_size_arg=4MB
+phoenix_v2.menu.eesz.4M.build.partition_scheme=fsnone
 wifio.menu.eesz.4M.build.flash_size_arg=4MB
+wifio.menu.eesz.4M.build.partition_scheme=fsnone
 arduino_spi.menu.eesz.4M.build.flash_size_arg=4MB
+arduino_spi.menu.eesz.4M.build.partition_scheme=fsnone
 espresso_lite_v1.menu.eesz.4M.build.flash_size_arg=4MB
+espresso_lite_v1.menu.eesz.4M.build.partition_scheme=fsnone
 wifi_slot.menu.eesz.4M.build.flash_size_arg=4MB
+wifi_slot.menu.eesz.4M.build.partition_scheme=fsnone
 arduino_uart.menu.eesz.4M.build.flash_size_arg=4MB
+arduino_uart.menu.eesz.4M.build.partition_scheme=fsnone
 ESPDuino.menu.eesz.4M.build.flash_size_arg=4MB
+ESPDuino.menu.eesz.4M.build.partition_scheme=fsnone
 espresso_lite_v2.menu.eesz.4M.build.flash_size_arg=4MB
+espresso_lite_v2.menu.eesz.4M.build.partition_scheme=fsnone
 wifiduino.menu.eesz.4M.build.flash_size_arg=4MB
+wifiduino.menu.eesz.4M.build.partition_scheme=fsnone
 wiolink.menu.eesz.4M.build.flash_size_arg=4MB
+wiolink.menu.eesz.4M.build.partition_scheme=fsnone
 espectro.menu.eesz.4M.build.flash_size_arg=4MB
+espectro.menu.eesz.4M.build.partition_scheme=fsnone
 oak.menu.eesz.4M.build.flash_size_arg=4MB
+oak.menu.eesz.4M.build.partition_scheme=fsnone
 wifi_kit_8.menu.eesz.4M.build.flash_size_arg=4MB
+wifi_kit_8.menu.eesz.4M.build.partition_scheme=fsnone
 xinabox.menu.eesz.4M.build.flash_size_arg=4MB
+xinabox.menu.eesz.4M.build.partition_scheme=fsnone
 
 d1.menu.eesz.4M2M.upload.maximum_size=1043456
 espino.menu.eesz.4M2M.upload.maximum_size=1043456

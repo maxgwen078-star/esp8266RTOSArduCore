@@ -346,3 +346,32 @@ void *_heap_caps_zalloc(size_t size, uint32_t caps, const char *file, size_t lin
 
     return p;
 }
+
+
+/**
+ * @brief Get the size of the largest free block among all regions matching caps.
+ *
+ * Non intrusive: only traverses the free block linked list.
+ */
+size_t heap_caps_get_largest_free_block(uint32_t caps)
+{
+    size_t largest = 0;
+
+    for (int i = 0; i < g_heap_region_num; i++) {
+        if ((g_heap_region[i].caps & caps) != caps)
+            continue;
+
+        mem_blk_t *blk = (mem_blk_t *)g_heap_region[i].free_blk;
+
+        while (blk && !mem_blk_is_end(blk)) {
+            if (!mem_blk_is_used(blk)) {
+                size_t sz = blk_link_size(blk);
+                if (sz > largest)
+                    largest = sz;
+            }
+            blk = mem_blk_next(blk);
+        }
+    }
+
+    return largest;
+}

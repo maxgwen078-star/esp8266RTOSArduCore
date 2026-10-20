@@ -26,7 +26,6 @@
 #include "esp_err.h"
 #include "esp_log.h"    //TODO:No dependence on RTOS
 
-// Temporary use the FreeRTOS critical function
 #include "FreeRTOS.h"
 #define ENTER_CRITICAL() portENTER_CRITICAL()
 #define EXIT_CRITICAL() portEXIT_CRITICAL()
@@ -76,9 +75,23 @@ static const char *GPIO_TAG = "gpio";
     (i==15)? GPIO_PIN_REG_15: \
     GPIO_PIN_REG_16
 
+// ============================================================
+// ⚠️ PATCH : détection automatique GPIO2 en UART1 TX
+//    On lit PERIPHS_IO_MUX_GPIO2_U, bits 12-15.
+// ============================================================
+#ifndef FUNC_U1TXD_BK
+#define FUNC_U1TXD_BK   4
+#endif
+
+static inline bool gpio2_is_uart1_tx(void)
+{
+    uint32_t mux = READ_PERI_REG(PERIPHS_IO_MUX_GPIO2_U);
+    return (((mux >> 12) & 0xF) == FUNC_U1TXD_BK);
+}
+
 typedef struct {
-    gpio_isr_t fn;   /*!< isr function */
-    void *args;      /*!< isr function args */
+    gpio_isr_t fn;
+    void *args;
 } gpio_isr_func_t;
 
 static gpio_isr_func_t *gpio_isr_func = NULL;
@@ -158,9 +171,9 @@ static esp_err_t gpio_output_disable(gpio_num_t gpio_num)
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
-        WRITE_PERI_REG(PAD_XPD_DCDC_CONF, ((READ_PERI_REG(PAD_XPD_DCDC_CONF) & (uint32_t)0xffffffbc)) | (uint32_t)0x1); 	// mux configuration for XPD_DCDC and rtc_gpio0 connection
-        CLEAR_PERI_REG_MASK(RTC_GPIO_CONF, 0x1);    //mux configuration for out enable
-        CLEAR_PERI_REG_MASK(RTC_GPIO_ENABLE, 0x1);   //out disable
+        WRITE_PERI_REG(PAD_XPD_DCDC_CONF, ((READ_PERI_REG(PAD_XPD_DCDC_CONF) & (uint32_t)0xffffffbc)) | (uint32_t)0x1);
+        CLEAR_PERI_REG_MASK(RTC_GPIO_CONF, 0x1);
+        CLEAR_PERI_REG_MASK(RTC_GPIO_ENABLE, 0x1);
     } else {
         GPIO.enable_w1tc |= (0x1 << gpio_num);
     }
@@ -173,9 +186,9 @@ static esp_err_t gpio_output_enable(gpio_num_t gpio_num)
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
-        WRITE_PERI_REG(PAD_XPD_DCDC_CONF, ((READ_PERI_REG(PAD_XPD_DCDC_CONF) & (uint32_t)0xffffffbc)) | (uint32_t)0x1); // mux configuration for XPD_DCDC and rtc_gpio0 connection
-        CLEAR_PERI_REG_MASK(RTC_GPIO_CONF, 0x1);                                                                        //mux configuration for out enable
-        SET_PERI_REG_MASK(RTC_GPIO_ENABLE, 0x1);                                                                        //out enable
+        WRITE_PERI_REG(PAD_XPD_DCDC_CONF, ((READ_PERI_REG(PAD_XPD_DCDC_CONF) & (uint32_t)0xffffffbc)) | (uint32_t)0x1);
+        CLEAR_PERI_REG_MASK(RTC_GPIO_CONF, 0x1);
+        SET_PERI_REG_MASK(RTC_GPIO_ENABLE, 0x1);
     } else {
         GPIO.enable_w1ts |= (0x1 << gpio_num);
     }
@@ -189,9 +202,9 @@ esp_err_t gpio_set_level(gpio_num_t gpio_num, uint32_t level)
 
     if (RTC_GPIO_IS_VALID_GPIO(gpio_num)) {
         if (level) {
-            SET_PERI_REG_MASK(RTC_GPIO_OUT, 0x1);    //set_high_level
+            SET_PERI_REG_MASK(RTC_GPIO_OUT, 0x1);
         } else {
-            CLEAR_PERI_REG_MASK(RTC_GPIO_OUT, 0x1);    //set_low_level
+            CLEAR_PERI_REG_MASK(RTC_GPIO_OUT, 0x1);
         }
     } else {
         if (level) {
@@ -251,7 +264,6 @@ esp_err_t gpio_set_direction(gpio_num_t gpio_num, gpio_mode_t mode)
 {
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);
 
-    // esp8266 input is always connected
     if (mode & GPIO_MODE_DEF_OUTPUT) {
         gpio_output_enable(gpio_num);
     } else {
@@ -329,19 +341,25 @@ esp_err_t gpio_config(const gpio_config_t *gpio_cfg)
                 gpio_set_intr_type(io_num, gpio_cfg->intr_type);
             }
 
-            pin_reg.val = READ_PERI_REG(GPIO_PIN_REG(io_num));
-
-            // It should be noted that GPIO0, 2, 4, and 5 need to set the func register to 0,
-            // and the other GPIO needs to be set to 3 so that IO can be GPIO function.
-            if ((0x1 << io_num) & (GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_5)) {
-                pin_reg.rtc_pin.func_low_bit = 0;
-                pin_reg.rtc_pin.func_high_bit = 0;
+            // ============================================================
+            // ⚠️ PATCH : si GPIO2 est routé en UART1 TX, ne pas écraser
+            //    le pin mux. Détection automatique par lecture du registre.
+            // ============================================================
+            if (io_num == 2 && gpio2_is_uart1_tx()) {
+                // GPIO2 utilisé par UART1 TX → ne rien faire
             } else {
-                pin_reg.func_low_bit = 3;
-                pin_reg.func_high_bit = 0;
-            }
+                pin_reg.val = READ_PERI_REG(GPIO_PIN_REG(io_num));
 
-            WRITE_PERI_REG(GPIO_PIN_REG(io_num), pin_reg.val);
+                if ((0x1 << io_num) & (GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_5)) {
+                    pin_reg.rtc_pin.func_low_bit = 0;
+                    pin_reg.rtc_pin.func_high_bit = 0;
+                } else {
+                    pin_reg.func_low_bit = 3;
+                    pin_reg.func_high_bit = 0;
+                }
+
+                WRITE_PERI_REG(GPIO_PIN_REG(io_num), pin_reg.val);
+            }
         }
 
         io_num++;
@@ -350,27 +368,26 @@ esp_err_t gpio_config(const gpio_config_t *gpio_cfg)
     return ESP_OK;
 }
 
+// ============================================================
+// ⚠️ PATCH : ne traiter QUE les GPIO avec un handler attaché.
+// ============================================================
 void IRAM_ATTR gpio_intr_service(void *arg)
 {
-    //GPIO intr process
-    uint32_t gpio_num = 0;
-    //read status to get interrupt status for GPIO0-15
     uint32_t gpio_intr_status = GPIO.status;
 
     if (gpio_isr_func == NULL) {
         return;
     }
 
-    do {
-        if (gpio_num < GPIO_PIN_COUNT - 1) {
-            if (gpio_intr_status & BIT(gpio_num)) { //gpio0-gpio15
-                GPIO.status_w1tc = BIT(gpio_num);
-                if (gpio_isr_func[gpio_num].fn != NULL) {
-                    gpio_isr_func[gpio_num].fn(gpio_isr_func[gpio_num].args);
-                }
-            }
+    for (uint32_t gpio_num = 0; gpio_num < GPIO_PIN_COUNT - 1; gpio_num++) {
+        if (!(gpio_intr_status & BIT(gpio_num))) continue;
+
+        GPIO.status_w1tc = BIT(gpio_num);
+
+        if (gpio_isr_func[gpio_num].fn != NULL) {
+            gpio_isr_func[gpio_num].fn(gpio_isr_func[gpio_num].args);
         }
-    } while (++gpio_num < GPIO_PIN_COUNT - 1);
+    }
 }
 
 esp_err_t gpio_isr_handler_add(gpio_num_t gpio_num, gpio_isr_t isr_handler, void *args)
@@ -452,7 +469,6 @@ void gpio_uninstall_isr_service()
     return;
 }
 
-/*only level interrupt can be used for wake-up function*/
 esp_err_t gpio_wakeup_enable(gpio_num_t gpio_num, gpio_int_type_t intr_type)
 {
     GPIO_CHECK(GPIO_IS_VALID_GPIO(gpio_num), "GPIO number error", ESP_ERR_INVALID_ARG);

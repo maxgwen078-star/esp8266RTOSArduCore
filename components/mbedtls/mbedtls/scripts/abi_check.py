@@ -14,6 +14,13 @@ a configurable location, or are given as a brief list of problems.
 Returns 0 on success, 1 on ABI/API non-compliance, and 2 if there is an error
 while running the script. Note: must be run from Mbed TLS root.
 """
+# Auto-injected sys.path fix (portable build)
+import os as _os_syspath_patch
+import sys as _sys_syspath_patch
+_HERE_SYSPATH_PATCH = _os_syspath_patch.path.dirname(_os_syspath_patch.path.abspath(__file__))
+if _HERE_SYSPATH_PATCH not in _sys_syspath_patch.path:
+    _sys_syspath_patch.path.insert(0, _HERE_SYSPATH_PATCH)
+# End of auto-injected sys.path fix
 
 import os
 import sys

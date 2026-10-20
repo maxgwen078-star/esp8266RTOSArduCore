@@ -2,28 +2,115 @@
   "packages": [
     {
       "name": "esp8266RTOS",
-      "maintainer": "alexcajas505@gmail.com",
-      "websiteURL": "https://github.com/alexCajas/esp8266RTOSArduCore/",
-      "email": "alexcajas505@gmail.com",
+      "maintainer": "maxgwen078@gmail.com",
+      "websiteURL": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/",
+      "email": "maxgwen078@gmail.com",
       "help": {
-        "online": "https://github.com/alexCajas/esp8266RTOSArduCore"
+        "online": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/"
       },
       "platforms": [
         {
           "name": "esp8266RTOS",
           "architecture": "esp8266RTOS",
-          "version": "1.1.0",
+          "version": "1.1.1",
           "category": "ESP8266RTOS",
-          "url": "https://github.com/alexCajas/esp8266RTOSArduCore/releases/download/v1.1.0/v1.1.0-release.tar.gz",
-          "archiveFileName": "v1.1.0.tar.gz",
-          "checksum": "SHA-256:63492790800f58968c97a72551c00c67acf6810f2260b09ed02abfb1f18dfa55",
-          "size": "18913918",
+          "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/v1.1.1-release.tar.gz",
+          "archiveFileName": "v1.1.1-release.tar.gz",
+          "checksum": "SHA-256:0458e2d1d7dd17875e984238ef0228eb29d2473c187f9c310f98fe92037b09ff",
+          "size": "16036263",
           "help": {
-            "online": "https://github.com/alexCajas/esp8266RTOSArduCore/"
+            "online": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/"
           },
           "boards": [
             {
-              "name": "ESP8266 Module"
+              "name": "Generic ESP8266 Module"
+            },
+            {
+              "name": "Generic ESP8285 Module [RTOS]"
+            },
+            {
+              "name": "NodeMCU 1.0 (ESP-12E Module) [RTOS]"
+            },
+            {
+              "name": "LOLIN(WEMOS) D1 R2 & mini [RTOS]"
+            },
+            {
+              "name": "Adafruit Feather HUZZAH ESP8266 [RTOS]"
+            },
+            {
+              "name": "SparkFun ESP8266 Thing [RTOS]"
+            },
+            {
+              "name": "ITEAD Sonoff [RTOS]"
+            },
+            {
+              "name": "WifInfo [RTOS]"
+            },
+            {
+              "name": "Olimex MOD-WIFI [RTOS]"
+            },
+            {
+              "name": "Wemos D1 R1 [RTOS]"
+            },
+            {
+              "name": "ESPino [RTOS]"
+            },
+            {
+              "name": "Invent One [RTOS]"
+            },
+            {
+              "name": "Phoenix 1.0 [RTOS]"
+            },
+            {
+              "name": "Agrumino Lemon v4 [RTOS]"
+            },
+            {
+              "name": "Eduino WiFi [RTOS]"
+            },
+            {
+              "name": "ThaiEasyElec ESPino [RTOS]"
+            },
+            {
+              "name": "Phoenix 2.0 [RTOS]"
+            },
+            {
+              "name": "Wifio [RTOS]"
+            },
+            {
+              "name": "Arduino WiFi Shield (SPI) [RTOS]"
+            },
+            {
+              "name": "ESPresso Lite 1.0 [RTOS]"
+            },
+            {
+              "name": "Amperka WiFi Slot [RTOS]"
+            },
+            {
+              "name": "Arduino WiFi Shield (UART) [RTOS]"
+            },
+            {
+              "name": "ESPDuino [RTOS]"
+            },
+            {
+              "name": "ESPresso Lite 2.0 [RTOS]"
+            },
+            {
+              "name": "Wifiduino [RTOS]"
+            },
+            {
+              "name": "Seeed Wio Link [RTOS]"
+            },
+            {
+              "name": "Espectro Core [RTOS]"
+            },
+            {
+              "name": "Digistump Oak [RTOS]"
+            },
+            {
+              "name": "Heltec WiFi Kit 8 [RTOS]"
+            },
+            {
+              "name": "XinaBox CW01 [RTOS]"
             }
           ],
           "toolsDependencies": [
@@ -31,60 +118,34 @@
               "packager": "esp8266RTOS",
               "name": "xtensa-lx106-elf",
               "version": "8_4_0-esp-2020r3"
-            }
-          ]
-        },
-        
-        {
-          "name": "esp8266RTOS",
-          "architecture": "esp8266RTOS",
-          "version": "1.0.3",
-          "category": "ESP8266RTOS",
-          "url": "https://github.com/alexCajas/esp8266RTOSArduCore/archive/refs/tags/v1.0.3.tar.gz",
-          "archiveFileName": "v1.0.3.tar.gz",
-          "checksum": "SHA-256:aa1145e4d7eefdaf2f49bc3fede0a00cc1ff03a996906d7e877b025338671b75",
-          "size": "18580362",
-          "help": {
-            "online": "https://github.com/alexCajas/esp8266RTOSArduCore/"
-          },
-          "boards": [
-            {
-              "name": "ESP8266 Module"
-            }
-          ],
-          "toolsDependencies": [
+            },
             {
               "packager": "esp8266RTOS",
-              "name": "xtensa-lx106-elf",
-              "version": "8_4_0-esp-2020r3"
-            }
-          ]
-        },
-        {
-          "name": "esp8266RTOS",
-          "architecture": "esp8266RTOS",
-          "version": "1.0.2",
-          "category": "ESP8266RTOS",
-          "url": "https://github.com/alexCajas/esp8266RTOSArduCore/archive/refs/tags/v1.0.2.tar.gz",
-          "archiveFileName": "v1.0.2.tar.gz",
-          "checksum": "SHA-256:3e752bdf56488a7650134e257c08c26913ac4d35ebd77af4db5230e5795eb169",
-          "size": "18543378",
-          "help": {
-            "online": "https://github.com/alexCajas/esp8266RTOSArduCore/"
-          },
-          "boards": [
-            {
-              "name": "ESP8266 Module"
-            }
-          ],
-          "toolsDependencies": [
+              "name": "cmake",
+              "version": "3.27.9"
+            },
             {
               "packager": "esp8266RTOS",
-              "name": "xtensa-lx106-elf",
-              "version": "8_4_0-esp-2020r3"
+              "name": "gcc",
+              "version": "16.1.0"
+            },
+            {
+              "packager": "esp8266RTOS",
+              "name": "make",
+              "version": "4.4.1"
+            },
+            {
+              "packager": "esp8266RTOS",
+              "name": "ninja",
+              "version": "1.13.2"
+            },
+            {
+              "packager": "esp8266RTOS",
+              "name": "python3",
+              "version": "3.7.2-post1"
             }
           ]
-        }        
+        }
       ],
       "tools": [
         {
@@ -92,25 +153,76 @@
           "version": "8_4_0-esp-2020r3",
           "systems": [
             {
-              "host": "x86_64-pc-linux-gnu",
-              "url": "https://dl.espressif.com/dl/xtensa-lx106-elf-gcc8_4_0-esp-2020r3-linux-amd64.tar.gz",
-              "archiveFileName": "xtensa-lx106-elf-gcc8_4_0-esp-2020r3-linux-amd64.tar.gz",
-              "checksum": "SHA-256:0a1804b5e2231c6db8b72af6bc2a0f9a5b6994cfba29956d412651109f13fe7e",
-              "size": "88885561"
-            },
+              "host": "i686-mingw32",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/xtensa-lx106-elf-8_4_0-esp-2020r3-win32.zip",
+              "archiveFileName": "xtensa-lx106-elf-8_4_0-esp-2020r3-win32.zip",
+              "checksum": "SHA-256:19f6f811a6d887f3ebe2fa76eeee372133092fb0b821fa5028fc984d1aaffdea",
+              "size": "108643512"
+            }
+          ]
+        },
+        {
+          "name": "cmake",
+          "version": "3.27.9",
+          "systems": [
             {
               "host": "i686-mingw32",
-              "url": "https://dl.espressif.com/dl/xtensa-lx106-elf-gcc8_4_0-esp-2020r3-win32.zip",
-              "archiveFileName": "xtensa-lx106-elf-gcc8_4_0-esp-2020r3-win32.zip",
-              "checksum": "SHA-256:733b4da8723471b430f8692b943a7917ad5920b98e7bc6bdf9fb7617182c2b33",
-              "size": "108711860"
-            },
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/cmake-3.27.9-win32.zip",
+              "archiveFileName": "cmake-3.27.9-win32.zip",
+              "checksum": "SHA-256:96d77f34e994e329cfdc4a8f5062c3c821424bee9d9b2c44027abb85f64e6a19",
+              "size": "43268661"
+            }
+          ]
+        },
+        {
+          "name": "gcc",
+          "version": "16.1.0",
+          "systems": [
             {
-              "host": "x86_64-apple-darwin",
-              "url": "https://dl.espressif.com/dl/xtensa-lx106-elf-gcc8_4_0-esp-2020r3-macos.tar.gz",
-              "archiveFileName": "xtensa-lx106-elf-gcc8_4_0-esp-2020r3-macos.tar.gz",
-              "checksum": "SHA-256:7823c5fdf3cea2b588cf0c5bd962774ab60a30b8d9c19ae0056a0ef3697537db",
-              "size": "95436978"
+              "host": "i686-mingw32",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/gcc-16.1.0-win32.zip",
+              "archiveFileName": "gcc-16.1.0-win32.zip",
+              "checksum": "SHA-256:70fcb38ef07b0e0de5cf3d70af80e7bf9026fc7012ded6e8509477e6b3b72324",
+              "size": "1037454"
+            }
+          ]
+        },
+        {
+          "name": "make",
+          "version": "4.4.1",
+          "systems": [
+            {
+              "host": "i686-mingw32",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/make-4.4.1-win32.zip",
+              "archiveFileName": "make-4.4.1-win32.zip",
+              "checksum": "SHA-256:ec95125fa6a12aca6ce1e6634741f9cd28efe831aa34fff6ff91ebe0991707c3",
+              "size": "166148"
+            }
+          ]
+        },
+        {
+          "name": "ninja",
+          "version": "1.13.2",
+          "systems": [
+            {
+              "host": "i686-mingw32",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/ninja-1.13.2-win32.zip",
+              "archiveFileName": "ninja-1.13.2-win32.zip",
+              "checksum": "SHA-256:29784f3d2af65b1d314f9bd2b6948d3bf7f8c9c3490f33b59e9ebd7f67c3179d",
+              "size": "300282"
+            }
+          ]
+        },
+        {
+          "name": "python3",
+          "version": "3.7.2-post1",
+          "systems": [
+            {
+              "host": "i686-mingw32",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/python3-3.7.2-post1-win32.zip",
+              "archiveFileName": "python3-3.7.2-post1-win32.zip",
+              "checksum": "SHA-256:4ae38e551e44673b1bbe07dd3a6bb92f2d5d4c73f44cc00ee876aed8433ffe04",
+              "size": "30834661"
             }
           ]
         }

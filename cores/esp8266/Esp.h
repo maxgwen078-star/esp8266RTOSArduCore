@@ -27,17 +27,17 @@
  * AVR macros for WDT managment
  */
 typedef enum {
-    WDTO_0MS    = 0,   //!< WDTO_0MS
-    WDTO_15MS   = 15,  //!< WDTO_15MS
-    WDTO_30MS   = 30,  //!< WDTO_30MS
-    WDTO_60MS   = 60,  //!< WDTO_60MS
-    WDTO_120MS  = 120, //!< WDTO_120MS
-    WDTO_250MS  = 250, //!< WDTO_250MS
-    WDTO_500MS  = 500, //!< WDTO_500MS
-    WDTO_1S     = 1000,//!< WDTO_1S
-    WDTO_2S     = 2000,//!< WDTO_2S
-    WDTO_4S     = 4000,//!< WDTO_4S
-    WDTO_8S     = 8000 //!< WDTO_8S
+    WDTO_0MS    = 0,
+    WDTO_15MS   = 15,
+    WDTO_30MS   = 30,
+    WDTO_60MS   = 60,
+    WDTO_120MS  = 120,
+    WDTO_250MS  = 250,
+    WDTO_500MS  = 500,
+    WDTO_1S     = 1000,
+    WDTO_2S     = 2000,
+    WDTO_4S     = 4000,
+    WDTO_8S     = 8000
 } WDTO_t;
 
 
@@ -65,9 +65,9 @@ public:
 
     //Internal RAM
     #ifdef CONFIG_IDF_TARGET_ESP32
-    uint32_t getHeapSize(); //total heap size
-    uint32_t getMaxAllocHeap(); //largest block of heap that can be allocated at once
-    
+    uint32_t getHeapSize();
+    uint32_t getMaxAllocHeap();
+
     //SPI RAM
     uint32_t getFreePsram();
     uint32_t getMinFreePsram();
@@ -75,10 +75,13 @@ public:
     uint32_t getMaxAllocPsram();
     #endif
 
-
-    uint32_t getFreeHeap(); //available heap
-    uint32_t getMinFreeHeap(); //lowest level of free heap since boot
-    
+    uint32_t getFreeHeap();
+    uint32_t getMinFreeHeap();
+    uint32_t getHeapSize();
+    uint32_t getMaxAllocHeap();
+    uint8_t  getHeapFragmentation();
+	
+    uint32_t getChipId();
     uint8_t getChipRevision();
     const char * getChipModel();
     uint8_t getChipCores();
@@ -91,6 +94,11 @@ public:
     uint32_t getFlashChipSize();
     uint32_t getFlashChipSpeed();
     FlashMode_t getFlashChipMode();
+
+    // Lecture fiable de la flash (via g_rom_flashchip)
+    uint32_t getFlashChipId(void);
+    uint8_t  getFlashChipVendorId(void);
+    uint32_t getFlashChipRealSize(void);
 
     uint32_t magicFlashChipSize(uint8_t byte);
     uint32_t magicFlashChipSpeed(uint8_t byte);
@@ -109,7 +117,6 @@ public:
     bool partitionRead(const esp_partition_t *partition, uint32_t offset, uint32_t *data, size_t size);
 
     uint64_t getEfuseMac();
-
 };
 
 uint32_t IRAM_ATTR EspClass::getCycleCount()

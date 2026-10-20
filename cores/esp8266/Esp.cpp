@@ -29,6 +29,8 @@
 extern "C" {
 #include "esp_ota_ops.h"
 #include "esp_image_format.h"
+#include "esp_heap_caps.h"
+#include "esp8266/rom_functions.h"
 }
 #include <MD5Builder.h>
 
@@ -139,14 +141,52 @@ uint32_t EspClass::getMinFreePsram(void)
 
 uint32_t EspClass::getFreeHeap(void)
 {
-    return esp_get_free_heap_size();
+    // DRAM seule (MALLOC_CAP_8BIT), même référentiel que getHeapSize()
+    return heap_caps_get_free_size(MALLOC_CAP_8BIT);
 }
 
 uint32_t EspClass::getMinFreeHeap(void)
 {
-    return esp_get_minimum_free_heap_size();
+    // DRAM seule, minimum depuis le boot
+    return heap_caps_get_minimum_free_size(MALLOC_CAP_8BIT);
 }
 
+
+uint32_t EspClass::getHeapSize(void)
+{
+    extern heap_region_t g_heap_region[];
+    extern size_t g_heap_region_num;
+
+    uint32_t total = 0;
+    for (size_t i = 0; i < g_heap_region_num; i++) {
+        // On ne compte QUE la région accessible en 8-bit (= DRAM, heap malloc)
+        // IRAM (MALLOC_CAP_EXEC) est exclue : on ne peut pas y mettre de String
+        if (g_heap_region[i].caps & MALLOC_CAP_8BIT)
+            total += g_heap_region[i].total_size;
+    }
+    return total;
+}
+
+uint32_t EspClass::getMaxAllocHeap(void)
+{
+    // Plus grand bloc contigu allouable.
+    // Nécessite heap_caps_get_largest_free_block() ajouté au SDK.
+    return heap_caps_get_largest_free_block(/*MALLOC_CAP_32BIT*/MALLOC_CAP_8BIT);
+}
+
+uint8_t EspClass::getHeapFragmentation(void)
+{
+    uint32_t freeHeap = heap_caps_get_free_size(MALLOC_CAP_8BIT);
+    uint32_t maxBlock = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
+
+    if (freeHeap == 0) return 0;
+
+    float frag = 100.0f * (1.0f - ((float)maxBlock / (float)freeHeap));
+    if (frag < 0.0f)   frag = 0.0f;
+    if (frag > 100.0f) frag = 100.0f;
+
+    return (uint8_t)frag;
+}
 
 static uint32_t sketchSize(sketchSize_t response) {
     esp_image_metadata_t data;
@@ -218,6 +258,17 @@ uint32_t EspClass::getFreeSketchSpace () {
     return _partition->size;
 }
 
+uint32_t EspClass::getChipId(void)
+{
+    uint32_t chipId = 0;
+    uint64_t _chipmacid = 0LL;
+    esp_efuse_mac_get_default((uint8_t*)(&_chipmacid));
+    
+    // Version 32 bits (identique au core Arduino ESP8266)
+    chipId = ((_chipmacid >> 16) & 0xFFFFFFFF);
+    return chipId;
+}
+
 uint8_t EspClass::getChipRevision(void)
 {
     esp_chip_info_t chip_info;
@@ -257,13 +308,34 @@ const char * EspClass::getSdkVersion(void)
     return esp_get_idf_version();
 }
 
+// ============================================================
+//   LECTURE FLASH - ESP8266 RTOS (via g_rom_flashchip)
+// ============================================================
+
+uint32_t EspClass::getFlashChipId(void)
+{
+    // g_rom_flashchip.device_id contient le JEDEC ID complet
+    // (manufacturer + device) lu par le bootloader ROM.
+    return g_rom_flashchip.device_id;
+}
+
+uint8_t EspClass::getFlashChipVendorId(void)
+{
+    // Le manufacturer est l'octet de poids faible du JEDEC ID
+    return (uint8_t)(g_rom_flashchip.device_id & 0xFF);
+}
+
+uint32_t EspClass::getFlashChipRealSize(void)
+{
+    // Taille réelle en octets, lue par le bootloader ROM
+    return g_rom_flashchip.chip_size;
+}
+
 uint32_t EspClass::getFlashChipSize(void)
 {
-    esp_image_header_t fhdr;
-    if(flashRead(0x0000, (uint32_t*)&fhdr, sizeof(esp_image_header_t)) && fhdr.magic != ESP_IMAGE_HEADER_MAGIC) {
-        return 0;
-    }
-    return magicFlashChipSize(fhdr.spi_size);
+    // On utilise la taille réelle lue depuis la puce,
+    // pas l'en-tête de l'image (qui peut être faux sur RTOS).
+    return getFlashChipRealSize();
 }
 
 uint32_t EspClass::getFlashChipSpeed(void)

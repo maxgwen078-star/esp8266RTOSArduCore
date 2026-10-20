@@ -5,110 +5,217 @@ import sys
 import argparse
 import subprocess
 
-def to_msys_path(win_path):
-    """Converts C:\\path to /c/path for MSYS2 compatibility"""
-    drive, tail = os.path.splitdrive(win_path)
-    drive = drive.replace(':', '').lower()
-    tail = tail.replace('\\', '/')
-    return "/{}{}".format(drive, tail)
+
+# Keywords that mark a line as an actual compilation error (RED)
+ERROR_KEYWORDS = (
+    'error:',
+    'Error:',
+    'ERROR:',
+    'FAILED:',
+    'fatal error',
+    'ninja: build stopped',
+    'ninja: error',
+    'Traceback',
+    'undefined reference',
+    'collect2: error',
+)
+
+
+def _is_error(line):
+    return any(kw in line for kw in ERROR_KEYWORDS)
+
+
+def run_with_color_routing(cmd, env, cwd):
+    """
+    Run a command, reading its output line by line.
+    Since Arduino IDE 2.x does NOT interpret ANSI color codes on Windows,
+    we rely on the native stream routing:
+      - stderr -> red   (real compilation errors only)
+      - stdout -> black (everything else, including warnings)
+    CMake developer noise is filtered out entirely.
+    """
+    env["PYTHONUNBUFFERED"] = "1"
+
+    process = subprocess.Popen(
+        cmd, env=env, cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        universal_newlines=True,
+        bufsize=1,
+    )
+
+    in_cmake_block = False
+
+    # ---------- CMake noise ----------
+    BLOCK_STARTERS = (
+        'CMake Deprecation Warning',
+        'CMake Warning (dev)',
+        'CMake Warning:',
+        'CMake Warning at',
+    )
+    BLOCK_ENDERS = (
+        '-- ',
+        '[',
+        'ninja: ',
+        'Running ',
+        'Executing ',
+        'Project build',
+        'Generating ',
+        'Linking ',
+        'esptool.py',
+        'Generated ',
+    )
+    SINGLE_SKIP = (
+        'This warning is for project developers',
+        'Compatibility with CMake < 3.5',
+        'Update the VERSION argument',
+        'Run "cmake --help-policy',
+        'for policy details.',
+        'command to set the policy',
+        'Call Stack (most recent call first):',
+        'Source file extensions must be explicit',
+        'FindPythonInterp and FindPythonLibs modules',
+        'are removed.  Run',
+        'Manually-specified variables were not used by the project:',
+        'fatal: not a git repository',
+        "will not use 'git describe'",
+        'Could NOT find Perl',
+        '-- Configuring done',
+        '-- Generating done',
+        '-- Build files have been written to:',
+        '-- Project version:',
+        '-- Building ESP-IDF components',
+        '-- Adding linker script',
+        '-- Components:',
+        '-- Component paths:',
+        'Unable to cache built core',
+    )
+
+    def _is_block_starter(line):
+        return any(kw in line for kw in BLOCK_STARTERS)
+
+    def _is_block_ender(line):
+        return any(kw in line for kw in BLOCK_ENDERS)
+
+    def _is_single_skip(line):
+        return any(kw in line for kw in SINGLE_SKIP)
+
+    try:
+        for line in iter(process.stdout.readline, ''):
+            if not line:
+                break
+
+            stripped = line.lstrip()
+
+            # 1. Skip CMake dev-noise blocks
+            if in_cmake_block:
+                if _is_block_ender(stripped):
+                    in_cmake_block = False
+                else:
+                    continue
+
+            # 2. Entering a CMake dev-noise block?
+            if _is_block_starter(line):
+                in_cmake_block = True
+                continue
+
+            # 3. Skip single-line CMake noise
+            if _is_single_skip(line):
+                continue
+
+            # 4. Real compilation error -> stderr (red in Arduino IDE)
+            if _is_error(line):
+                sys.stderr.write(line)
+                sys.stderr.flush()
+                continue
+
+            # 5. Everything else (including warnings) -> stdout (black)
+            sys.stdout.write(line)
+            sys.stdout.flush()
+    finally:
+        process.stdout.close()
+        process.wait()
+
+    return process.returncode
+
 
 def main():
-    parser = argparse.ArgumentParser(description='Wrapper to compile with ESP-IDF in Windows')
+    parser = argparse.ArgumentParser(description='Windows Native Compiler Wrapper (portable)')
     parser.add_argument('-b', '--build', required=True)
     parser.add_argument('-i', '--idf', required=True)
     parser.add_argument('-x', '--xtensa', required=True)
-    parser.add_argument('-m', '--max_size', required=False) # Ignored in compile
-    parser.add_argument('-f', '--flash_size', required=False, default="Unknown") # Añadido para el platform.txt
+    parser.add_argument('-m', '--max_size', required=False)
+    parser.add_argument('-f', '--flash_size', required=False)
+    parser.add_argument('-C', '--cmake-dir',  default=None)
+    parser.add_argument('-G', '--gcc-dir',    default=None)
+    parser.add_argument('-M', '--make-dir',   default=None)
+    parser.add_argument('-N', '--ninja-dir',  default=None)
+    parser.add_argument('-P', '--python-dir', default=None)
     args, unknown = parser.parse_known_args()
 
     work_dir = os.path.join(args.build, "idfTemplate")
-
     if not os.path.exists(work_dir):
         os.makedirs(work_dir)
 
-    # ==================== WINDOWS BUILD (PURE TTY + SMART PAUSE + COLORS) ====================
-    msys_bash = r"C:\msys32\usr\bin\bash.exe"
-    idf_msys = to_msys_path(args.idf)
-    xtensa_msys = to_msys_path(os.path.join(args.xtensa, "bin"))
-    work_msys = to_msys_path(work_dir)
+    print("[Builder] Starting ESP8266 RTOS compilation (portable Windows)...",
+          file=sys.stderr, flush=True)
 
-    build_sh_path = os.path.join(work_dir, "run_build.sh")
-    win_env = os.environ.copy()
-    win_env["MSYSTEM"] = "MINGW32"
+    rtos_root = os.path.dirname(os.path.dirname(os.path.dirname(args.idf)))
 
-    with open(build_sh_path, "w") as f:
-        f.write("#!/bin/bash\n")
-        
-        # --- DEFINICIÓN DE COLORES Y FORMATOS ANSI AVANZADOS ---
-        f.write("RED='\\033[1;31m'\n")
-        f.write("GREEN='\\033[1;32m'\n")
-        f.write("YELLOW='\\033[1;33m'\n")
-        f.write("CYAN='\\033[1;36m'\n")
-        f.write("ALERT_BOX='\\033[1;37;41m'\n") 
-        f.write("NC='\\033[0m' # No Color\n")
-        
-        f.write("export PATH=\"/mingw32/bin:/usr/bin:{}:$PATH\"\n".format(xtensa_msys))
-        f.write("export IDF_PATH=\"{}\"\n".format(idf_msys))
-        f.write("cd \"{}\"\n".format(work_msys))
-        
-        f.write("echo -e \"${CYAN}========================================${NC}\"\n")
-        f.write("echo -e \"${CYAN}   ESP8266 RTOS SDK Build in MSYS2      ${NC}\"\n")
-        f.write("echo -e \"${CYAN}========================================${NC}\"\n")
-        f.write("echo -e \"\\n[Builder] Target Physical Flash: {}\"\n".format(args.flash_size))
-        f.write("echo -e \"\\n[Builder] Starting compilation...\"\n")
-        
-        # Compilamos Pura (Sin 'tee')
-        f.write("/mingw32/bin/python.exe \"{}/tools/idf.py\" build\n".format(idf_msys))
-        f.write("BUILD_RET=$?\n")
-        
-        # --- MANEJO DE ERROR (ROJO) ---
-        f.write("if [ $BUILD_RET -ne 0 ]; then\n")
-        f.write("  echo -e \"\\n${RED}[ERROR] Compilation failed with code $BUILD_RET!${NC}\"\n")
-        f.write("  echo -e \"${RED}Please review the red errors above.\\n${NC}\"\n")
-        f.write("  read -p \"Press Enter to close this window and cancel upload...\" dummy\n")
-        f.write("  exit $BUILD_RET\n")
-        f.write("fi\n")
-        
-        # --- MANEJO DE ÉXITO Y ALERTA VISUAL EXTREMA ---
-        f.write("if [ -f build/compile_commands.json ]; then\n")
-        f.write("  echo -e \"\\n${GREEN}[SUCCESS] Build finished successfully!${NC}\"\n")
-        
-        # Dibujamos un bloque gigante y colorido para llamar la atención sí o sí
-        f.write("  echo -e \"\\n${ALERT_BOX}                                                         ${NC}\"\n")
-        f.write("  echo -e \"${ALERT_BOX}   WARNINGS MAY EXIST IN THE LOG ABOVE!                  ${NC}\"\n")
-        f.write("  echo -e \"${ALERT_BOX}   PRESS ANY KEY NOW TO PAUSE AND REVIEW THEM            ${NC}\"\n")
-        f.write("  echo -e \"${ALERT_BOX}                                                         ${NC}\\n\"\n")
-        
-        # Pausa de 3 segundos. Si pulsa, se detiene indefinidamente.
-        f.write("  read -t 3 -n 1 -p \"Closing automatically in 3 seconds...\" dummy\n")
-        f.write("  if [ $? -eq 0 ]; then\n")
-        f.write("    echo -e \"\\n\\n${YELLOW}=== PAUSED ===${NC}\"\n")
-        f.write("    echo -e \"${YELLOW}Scroll up to read compiler warnings.${NC}\"\n")
-        f.write("    echo -e \"${YELLOW}Press Enter to exit and continue with upload.${NC}\"\n")
-        f.write("    read dummy\n")
-        f.write("  fi\n")
-        f.write("fi\n")
-        
-        f.write("exit 0\n")
+    def resolve(arg_val, *fallback_parts):
+        if arg_val:
+            return arg_val
+        return os.path.join(rtos_root, "tools", *fallback_parts)
 
-    print("[Builder] Opening MSYS2 Terminal for compilation...", file=sys.stderr)
+    xtensa_bin = os.path.join(args.xtensa, "bin")
+    cmake_dir  = resolve(args.cmake_dir,  "cmake")
+    gcc_dir    = resolve(args.gcc_dir,    "gcc")
+    make_dir   = resolve(args.make_dir,   "make")
+    ninja_dir  = resolve(args.ninja_dir,  "ninja")
+    python_dir = resolve(args.python_dir, "python3", "3.7.2-post1")
+
+    cmake_bin = os.path.join(cmake_dir, "bin")
+    ninja_bin = ninja_dir
+    make_bin  = make_dir
+    python_bin = python_dir
+
+    native_gcc_bin = gcc_dir
+    if not (os.path.isdir(native_gcc_bin) and
+            os.path.isfile(os.path.join(native_gcc_bin, "gcc.exe"))):
+        print("[Builder] WARNING: gcc.exe not found in " + native_gcc_bin,
+              file=sys.stderr, flush=True)
+
+    env = os.environ.copy()
+    env["IDF_PATH"] = args.idf
+
+    path_parts = [
+        xtensa_bin,
+        cmake_bin,
+        ninja_bin,
+        make_bin,
+        python_bin,
+        native_gcc_bin,
+    ]
+    path_parts.append(env.get("PATH", ""))
+
+    env["PATH"] = os.pathsep.join(path_parts)
+    env["CMAKE_POLICY_VERSION_MINIMUM"] = "3.5"
+
+    idf_py = os.path.join(args.idf, "tools", "idf.py")
+
+    print("[Builder] Portable tool paths:", file=sys.stderr)
+    print("  xtensa: " + xtensa_bin, file=sys.stderr)
+    print("  cmake : " + cmake_bin, file=sys.stderr)
+    print("  ninja : " + ninja_bin, file=sys.stderr)
+    print("  make  : " + make_bin, file=sys.stderr)
+    print("  python: " + python_bin, file=sys.stderr)
+    print("  gcc   : " + native_gcc_bin, file=sys.stderr)
     sys.stderr.flush()
 
-    # Flag OBLIGATORIO para emulación TTY
-    CREATE_NEW_CONSOLE = 0x00000010
+    rc = run_with_color_routing([sys.executable, idf_py, "build"], env, work_dir)
+    if rc != 0:
+        sys.exit(rc)
 
-    try:
-        p = subprocess.Popen([msys_bash, "--login", "-c", to_msys_path(build_sh_path)],
-                             creationflags=CREATE_NEW_CONSOLE, env=win_env)
-        p.wait()
-        
-        if p.returncode != 0:
-            print("\n[Builder Error] MSYS2 Compilation aborted by user or failed.", file=sys.stderr)
-            sys.exit(p.returncode)
-            
-    except Exception as e:
-        print("Error executing MSYS2 process: " + str(e), file=sys.stderr)
-        sys.exit(1)
 
 if __name__ == "__main__":
     main()

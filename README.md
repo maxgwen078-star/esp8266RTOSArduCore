@@ -1,132 +1,20 @@
-[![Esp8266](https://img.shields.io/badge/soc-ESP8266-green)](https://www.espressif.com/en/products/socs/esp8266)
-[![Arduino](https://img.shields.io/badge/platform-Arduino-green)](https://www.arduino.cc/)
-![C++](https://img.shields.io/badge/-C%2B%2B-red)
-[![FreeRTOS](https://img.shields.io/badge/-FreeRTOS-blue)](https://github.com/espressif/ESP8266_RTOS_SDK)
-[![RTOS](https://img.shields.io/badge/-RTOS-blue)](https://github.com/espressif/ESP8266_RTOS_SDK)
-[![framework](https://img.shields.io/badge/framework-IDF-yellow)](https://idf.espressif.com/)
-[![compatibility](https://img.shields.io/badge/compatibility-esp32-orange)]()
-[![Release](https://img.shields.io/github/v/release/alexCajas/esp8266RTOSArduCore)](https://github.com/alexCajas/esp8266RTOSArduCore/releases/latest)
 
-# ESP8266RTOSArduCore
-
-Arduino core for [ESP8266_RTOS_SDK](https://github.com/espressif/ESP8266_RTOS_SDK), a light version of FreeRTOS, supported by espressif.
-
-RTO_SDK share the same framework with esp-idf [https://github.com/espressif/esp-idf], so this project is based on esp32 arduino core [https://github.com/espressif/arduino-esp32], (version 1.0.6), to provide compatibility between esp32 arduino libraries and this core.
-
-# Branchs
-
-* **main**: lastest release version.
-* **stable**: stable version with some update ahead of main branch to test and fix.
-* **develop**: development branch to merge new features before to pull to stable version.
-
----
-
-# Index
-
-* [Features](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#features)
-* [Installation](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#installation):
-    * [LinuxOS-MacOS](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#LinuxOS-MacOS)
-    * [WindowsOS](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#WindowsOS)
-        * [Warnning](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#warnnig)
-* [Examples](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#examples)
-* [Limitations](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#limitations)
-* [To Do List](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#to-do-list)
-* [List of remaining core files to adapt test and fix](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#list-of-core-files-to-adapt-test-and-fix)
-* [List of remaining basic libraries to Test and fix](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#list-of-basic-libraries-to-test-and-fix)
-* [Links of interest](https://github.com/alexCajas/esp8266RTOSArduCore/tree/main#links-of-interest)
-
----
-
-# Features
-
-* Provides FreeRtos concurrency utilities.
-* Share framework with esp32 arduino core.
-* Compatibility with esp32 arduino libraries.
-* Easy installation with arduino board manager.
-* Include [WrapperFreeRTOS](https://github.com/alexCajas/WrapperFreeRTOS) library to implement concurrent objects.
-* Include [EmbeddedMqttBroker](https://github.com/alexCajas/EmbeddedMqttBroker) library like mqtt broker.
-
-# Installation
-
-## LinuxOS-MacOS
-You can install this core using arduino board manager with this package index [![Release](https://img.shields.io/github/v/release/alexCajas/esp8266RTOSArduCore)](https://github.com/alexCajas/esp8266RTOSArduCore/releases/latest)
-:
-
-~~~
-https://raw.githubusercontent.com/alexCajas/esp8266RTOSArduCore/main/package/package_esp8266RTOS_index.json
-~~~
-
-Then you need to configure a python environment for esp8266_RTOS_SDK in your system:
-
-* Go to your arduino cores installation directory, tipically:
-   
-~~~
-cd ~/.arduino15/packages/esp8266RTOS/hardware/esp8266RTOS/x.x.x/ 
-~~~
-
-* In this path you will find setup_env.sh run this to configure your environment:
-
-~~~
-./setup_env.sh
-~~~
-
-* This script will install:
-  * python3.10 (lastest version compatible with esp8266_rtos_sdk)
-  * python3.10-env
-  * cmake
-  * ninja
-  * other requirements including in requirements.txt
-  * a python env for this core, in order to comply with PEP 668 implementing in modern linux distros.
-
-* Select esp8266 boards RTOS:
-
-![Online code generation tool](assets/img/arduinoIDEBoardSelection.png)
-
-* **Now you are ready to write and install sketchs using Arduino IDE or VScode IDE!**
-
-## WindowsOS
-
-You can install this core using arduino board manager with this package index [![Release](https://img.shields.io/github/v/release/alexCajas/esp8266RTOSArduCore)](https://github.com/alexCajas/esp8266RTOSArduCore/releases/latest)
-:
-
-~~~
-https://raw.githubusercontent.com/alexCajas/esp8266RTOSArduCore/main/package/package_esp8266RTOS_index.json
-~~~
-
-Then you need to download and install esp8266_rtos_sdk requirements in your system:
-
-* Go to your arduino cores installation directory, tipically:
-   
-~~~
-C:\Users\YouUser\AppData\Local\Arduino15\packages\esp8266RTOS\hardware\esp8266RTOS\x.x.x
-~~~
-
-* In this path you will find setup_env.bat run this to download and install all requirements:
-
-~~~
-setup_env.bat
-~~~
-
-* This script will download a patched version of msys and will install it in C: root (it is important, all compile and flash scripts assume C:\\msys32 directory).
-
-* And will install python requirements in msys including cmake and ninja.
+* **No more `msys32` required:** This script will automatically download and extract the native Windows toolchain (GCC, CMake, Ninja, Python, etc.) directly from the attached releases, without needing to install `msys32` in the C: root.
+* It will also install the necessary Python requirements.
 
 Select esp8266 boards RTOS:
 
-
 ![Online code generation tool](assets/img/arduinoIDEBoardSelection.png)
-* **Now you are ready to write and install sketchs using Arduino IDE or VScode IDE!**
 
-### Warnnig
+* **Now you are ready to write and install sketches using Arduino IDE 2.3.10 or VSCode!**
+
+### Warning
 > [!CAUTION]
 > 
 
-Since esp8266_rtos_sdk use msys2 to build and flash projects, there are **limitations with arduino**:
-* when you **verify** some skecth, arduino cli will open a msys2 terminal and wait for compile process, if there are any error it will showed in this terminal but not in arduino's terminal.
-  
-![Online code generation tool](assets/img/build-process-windows.png)
-
-* **flash** process use a hide msys terminal but the process log will showed in arduino's terminal.
+Since the compilation process now runs natively on Windows without `msys32`, there are a few things to keep in mind:
+* **Verify process:** When you verify a sketch, the compilation output will now appear directly in the Arduino IDE terminal (or the standard Windows console), making error tracking much easier.
+* **Flash process:** The flashing process runs natively, and the logs are displayed directly in the Arduino IDE terminal.
 
 # Examples
 
@@ -217,9 +105,8 @@ void TaskBlink(void *pvParameters)
 - [x] Add esp8266 boards configurations in boards.txt
 - [x] Add pins map support for more models of esp8266 boards.
 - [x] Changes bash scripts to python scripts to support more OS.
-- [ ] adapt, test and fix remaining core files with hardware dependencies of esp32 core. [See this section](https://github.com/alexCajas/ESP8266RTOSArdu/tree/main#list-of-core-files-to-adapt-test-and-fix). 
-- [ ] Test and fix remaining basic libraries of esp32 core. [See this section](https://github.com/alexCajas/ESP8266RTOSArdu/tree/main#list-of-basic-libraries-to-test-and-fix).
-- [ ] Think in add #if TARGET_CONF_esp32 to more compatibility. --> I think that is a good idea because RTOS is more ligth than FreeRtos.
+- [x] **Remove msys32 dependency for Windows compilation.**
+- [x] **Add compatibility with Arduino IDE 2.3.10.**
 
 # List of core files to adapt test and fix
 
@@ -267,23 +154,23 @@ void TaskBlink(void *pvParameters)
 - [x] WiFiClientSecure
 - [x] WiFiProv
 - [x] HTTPClient
-- [ ] HttpUpdate
-- [ ] HttpUPdateServer
+- [x] HttpUpdate
+- [x] HttpUPdateServer
 - [x] DNSServer
 - [x] ESPmDNS
 - [ ] AyncUDP?
-- [ ] Update
-- [ ] ArduinoOta
+- [x] Update
+- [x] ArduinoOta
 - [ ] EEPROM
 - [x] ESP[32|8266] examples
 - [ ] FFat
-- [ ] FS
+- [x] FS
 - [ ] NetBios
 - [ ] Preferences?
 - [ ] SD
 - [ ] SDMMC?
 - [ ] SPI
-- [ ] SPIFFS
+- [x] SPIFFS
 - [ ] Ticker
 - [ ] Wire
 
