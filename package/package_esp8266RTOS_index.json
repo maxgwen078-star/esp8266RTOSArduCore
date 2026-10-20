@@ -16,8 +16,8 @@
           "category": "ESP8266RTOS",
           "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/v1.1.1-release.tar.gz",
           "archiveFileName": "v1.1.1-release.tar.gz",
-          "checksum": "SHA-256:0458e2d1d7dd17875e984238ef0228eb29d2473c187f9c310f98fe92037b09ff",
-          "size": "16036263",
+          "checksum": "SHA-256:dc91734335e22fb31949e902b8111b8c5cb733042b63d862264cacde2bd0cdf4",
+          "size": "16035884",
           "help": {
             "online": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/"
           },
