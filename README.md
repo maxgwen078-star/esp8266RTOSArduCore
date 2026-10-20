@@ -16,6 +16,16 @@ Since the compilation process now runs natively on Windows without `msys32`, the
 * **Verify process:** When you verify a sketch, the compilation output will now appear directly in the Arduino IDE terminal (or the standard Windows console), making error tracking much easier.
 * **Flash process:** The flashing process runs natively, and the logs are displayed directly in the Arduino IDE terminal.
 
+# Installation
+
+You can install this core using arduino board manager with this package index [![Release](https://img.shields.io/github/v/release/maxgwen078-star/esp8266RTOSArduCore)](https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/latest)
+:
+
+~~~
+https://raw.githubusercontent.com/maxgwen078-star/esp8266RTOSArduCore/main/package/package_esp8266RTOS_index.json
+~~~
+
+
 # Examples
 
 * **Basic blink example**
