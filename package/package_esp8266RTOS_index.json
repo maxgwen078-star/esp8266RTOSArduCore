@@ -12,12 +12,12 @@
         {
           "name": "esp8266RTOS",
           "architecture": "esp8266RTOS",
-          "version": "1.1.1",
+          "version": "1.1.2",
           "category": "ESP8266RTOS",
-          "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/v1.1.1-release.tar.gz",
-          "archiveFileName": "v1.1.1-release.tar.gz",
-          "checksum": "SHA-256:dc91734335e22fb31949e902b8111b8c5cb733042b63d862264cacde2bd0cdf4",
-          "size": "16035884",
+          "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.2/v1.1.2-release.tar.gz",
+          "archiveFileName": "v1.1.2-release.tar.gz",
+          "checksum": "SHA-256:d05e412dd033be0b82c2bbd718061f4f9a86855d11a425f0cd2620d91e6dffc1",
+          "size": "38544390",
           "help": {
             "online": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/"
           },
@@ -154,9 +154,9 @@
           "systems": [
             {
               "host": "i686-mingw32",
-              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/xtensa-lx106-elf-8_4_0-esp-2020r3-win32.zip",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.2/xtensa-lx106-elf-8_4_0-esp-2020r3-win32.zip",
               "archiveFileName": "xtensa-lx106-elf-8_4_0-esp-2020r3-win32.zip",
-              "checksum": "SHA-256:19f6f811a6d887f3ebe2fa76eeee372133092fb0b821fa5028fc984d1aaffdea",
+              "checksum": "SHA-256:8f92505ff57f00b6cb43acbe68dcfa5290b663230869a670cc6fc2312ff834d3",
               "size": "108643512"
             }
           ]
@@ -167,9 +167,9 @@
           "systems": [
             {
               "host": "i686-mingw32",
-              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/cmake-3.27.9-win32.zip",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.2/cmake-3.27.9-win32.zip",
               "archiveFileName": "cmake-3.27.9-win32.zip",
-              "checksum": "SHA-256:96d77f34e994e329cfdc4a8f5062c3c821424bee9d9b2c44027abb85f64e6a19",
+              "checksum": "SHA-256:0534466daf7c85c4a02ee8b4fd218ea363d3ce1fe0e8d0f4f2a4b7cdb2b79fb4",
               "size": "43268661"
             }
           ]
@@ -180,9 +180,9 @@
           "systems": [
             {
               "host": "i686-mingw32",
-              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/gcc-16.1.0-win32.zip",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.2/gcc-16.1.0-win32.zip",
               "archiveFileName": "gcc-16.1.0-win32.zip",
-              "checksum": "SHA-256:70fcb38ef07b0e0de5cf3d70af80e7bf9026fc7012ded6e8509477e6b3b72324",
+              "checksum": "SHA-256:2805a5346015314bff9d1607b7e696f80463d72a6ecca054b60ed2cdb50577e2",
               "size": "1037454"
             }
           ]
@@ -193,9 +193,9 @@
           "systems": [
             {
               "host": "i686-mingw32",
-              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/make-4.4.1-win32.zip",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.2/make-4.4.1-win32.zip",
               "archiveFileName": "make-4.4.1-win32.zip",
-              "checksum": "SHA-256:ec95125fa6a12aca6ce1e6634741f9cd28efe831aa34fff6ff91ebe0991707c3",
+              "checksum": "SHA-256:a9e904d3e33a05ebc3a9a82ca7b8b53538cc2920614b9390b3a036bd6c9067fd",
               "size": "166148"
             }
           ]
@@ -206,9 +206,9 @@
           "systems": [
             {
               "host": "i686-mingw32",
-              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/ninja-1.13.2-win32.zip",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.2/ninja-1.13.2-win32.zip",
               "archiveFileName": "ninja-1.13.2-win32.zip",
-              "checksum": "SHA-256:29784f3d2af65b1d314f9bd2b6948d3bf7f8c9c3490f33b59e9ebd7f67c3179d",
+              "checksum": "SHA-256:cb2afcb43af12387c9d18eff8f959a1204ab261e732b7b9b664530e108b75df2",
               "size": "300282"
             }
           ]
@@ -219,10 +219,10 @@
           "systems": [
             {
               "host": "i686-mingw32",
-              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.1/python3-3.7.2-post1-win32.zip",
+              "url": "https://github.com/maxgwen078-star/esp8266RTOSArduCore/releases/download/v1.1.2/python3-3.7.2-post1-win32.zip",
               "archiveFileName": "python3-3.7.2-post1-win32.zip",
-              "checksum": "SHA-256:4ae38e551e44673b1bbe07dd3a6bb92f2d5d4c73f44cc00ee876aed8433ffe04",
-              "size": "30834661"
+              "checksum": "SHA-256:287cb8e661f8cd0b2c77eadede51cf585e2293797dbe97c91830b89ac757275e",
+              "size": "30834667"
             }
           ]
         }
