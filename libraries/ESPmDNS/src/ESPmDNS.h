@@ -47,7 +47,7 @@ License (MIT license):
 
 //this should be defined at build time
 #ifndef ARDUINO_VARIANT
-#define ARDUINO_VARIANT "esp32"
+#define ARDUINO_VARIANT "esp8266"
 #endif
 
 class MDNSResponder {
@@ -81,7 +81,7 @@ public:
     addServiceTxt(name.c_str(), proto.c_str(), key.c_str(), value.c_str());
   }
 
-  void enableArduino(uint16_t port=3232, bool auth=false);
+  void enableArduino(uint16_t port=8266, bool auth=false);
   void disableArduino();
 
   void enableWorkstation(wifi_interface_t interface=WIFI_IF_STA);

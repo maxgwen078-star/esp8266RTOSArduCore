@@ -329,7 +329,12 @@ esp_err_t spi_set_interface(spi_host_t host, spi_interface_t *interface)
                 PIN_FUNC_SELECT(PERIPHS_IO_MUX_MTDI_U, FUNC_HSPIQ_MISO); //GPIO12 is SPI MISO pin (Master Data In)
             }
 
-            if (interface->cs_en) {
+            // FIX BOARD1 D8/GPIO15: if CS is handled by GPIO (cs_en=0), force MTDO to GPIO no pulldown
+            if(!interface->cs_en){
+                PIN_FUNC_SELECT(PERIPHS_IO_MUX_MTDO_U, FUNC_GPIO15);
+                CLEAR_PERI_REG_MASK(PERIPHS_IO_MUX_MTDO_U, PERIPHS_IO_MUX_PULLDWN);
+                CLEAR_PERI_REG_MASK(PERIPHS_IO_MUX_MTDO_U, PERIPHS_IO_MUX_PULLUP);
+            } else {
                 PIN_PULLUP_EN(PERIPHS_IO_MUX_MTDO_U);
                 PIN_FUNC_SELECT(PERIPHS_IO_MUX_MTDO_U, FUNC_HSPI_CS0);
             }
@@ -491,7 +496,7 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_master_trans(spi_host_t host, spi_
         } else {
             ESP_LOGW(TAG,"Using unaligned data may reduce transmission efficiency");
             memset(spi_object[host]->buf, 0, sizeof(uint32_t) * 16);
-            memcpy(spi_object[host]->buf, trans->mosi, trans->bits.mosi / 8 + (trans->bits.mosi % 8) ? 1 : 0);
+            memcpy(spi_object[host]->buf, trans->mosi, (trans->bits.mosi / 8) + ((trans->bits.mosi % 8) ? 1 : 0));
             for (x = 0; x < trans->bits.mosi; x += 32) {
                 y = x / 32;
                 SPI[host]->data_buf[y] = spi_object[host]->buf[y];
@@ -518,9 +523,14 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_master_trans(spi_host_t host, spi_
     // Start transmission
     SPI[host]->cmd.usr = 1;
 
+    // FIX RTOS BUG: wait for completion even for MOSI only (nonos does this)
+    // Without this, CS/DC toggle happens while transfer still active -> white screen
+    while (SPI[host]->cmd.usr);
+
     // Receive miso data
     if (trans->bits.miso && trans->miso) {
-        while (SPI[host]->cmd.usr);
+        // already waited above
+
 
         if ((uint32_t)(trans->miso) % 4 == 0) {
             for (x = 0; x < trans->bits.miso; x += 32) {
@@ -534,7 +544,7 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_master_trans(spi_host_t host, spi_
                 y = x / 32;
                 spi_object[host]->buf[y] = SPI[host]->data_buf[y];
             }
-            memcpy(trans->miso, spi_object[host]->buf, trans->bits.miso / 8 + (trans->bits.miso % 8) ? 1 : 0);
+            memcpy(trans->miso, spi_object[host]->buf, (trans->bits.miso / 8) + ((trans->bits.miso % 8) ? 1 : 0));
         }
     }
 
@@ -577,7 +587,7 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_slave_trans(spi_host_t host, spi_t
         } else {
             ESP_LOGW(TAG,"Using unaligned data may reduce transmission efficiency");
             memset(spi_object[host]->buf, 0, sizeof(uint32_t) * 16);
-            memcpy(spi_object[host]->buf, trans->miso, trans->bits.miso / 8 + (trans->bits.miso % 8) ? 1 : 0);
+            memcpy(spi_object[host]->buf, trans->miso, (trans->bits.miso / 8) + ((trans->bits.miso % 8) ? 1 : 0));
             for (x = 0; x < trans->bits.miso; x += 32) {
                 y = x / 32;
                 SPI[host]->data_buf[y] = spi_object[host]->buf[y];
@@ -599,7 +609,7 @@ static esp_err_t SPI_HIGH_THROUGHPUT_ATTR spi_slave_trans(spi_host_t host, spi_t
                 y = x / 32;
                 spi_object[host]->buf[y] = SPI[host]->data_buf[y];
             }
-            memcpy(trans->mosi, spi_object[host]->buf, trans->bits.mosi / 8 + (trans->bits.mosi % 8) ? 1 : 0);
+            memcpy(trans->mosi, spi_object[host]->buf, (trans->bits.mosi / 8) + ((trans->bits.mosi % 8) ? 1 : 0));
         }
     }
 

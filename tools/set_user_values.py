@@ -32,6 +32,37 @@ def _safe_rmtree(path):
         return False
 
 
+def _strip_cmake_blocks(lines):
+    """Retire les blocs injectés précédemment pour éviter l'accumulation
+    d'une exécution sur l'autre."""
+    markers = frozenset([
+        "# --- Arduino loopTask Stack Size Override ---",
+        "# --- Arduino IDE Board Variant Linkage ---",
+        "# --- Arduino IDE Custom build.extra_flags ---",
+    ])
+    out, i, n = [], 0, len(lines)
+    while i < n:
+        s = lines[i].strip()
+        if s in markers:
+            # Sauter jusqu'à la ligne de tirets (incluse)
+            i += 1
+            while i < n:
+                body = lines[i].strip()
+                if (body.startswith("#")
+                        and len(body) > 1
+                        and set(body.lstrip("#").strip()) <= {"-"}):
+                    i += 1  # sauter la ligne de tirets
+                    break
+                i += 1
+            # Sauter les lignes vides qui suivent le bloc
+            while i < n and lines[i].strip() == "":
+                i += 1
+            continue
+        out.append(lines[i])
+        i += 1
+    return out
+
+
 def main():
     parser = argparse.ArgumentParser(description='Inject Arduino IDE hardware settings into ESP-IDF sdkconfig and CMake')
     parser.add_argument('-b',  '--build', required=True)
@@ -43,6 +74,7 @@ def main():
     parser.add_argument('-l',  '--log_level', required=True)
     parser.add_argument('-v',  '--variant', required=True)
     parser.add_argument('-ps', '--partition_scheme', required=False, default=None)
+    parser.add_argument('-ls', '--loop_stack_size', required=False, default="3072")
     parser.add_argument('-e',  '--extra_flags', nargs=argparse.REMAINDER, default=[])
 
     args, unknown = parser.parse_known_args()
@@ -63,6 +95,7 @@ def main():
     print("[Config Injector] Translating Arduino IDE settings to ESP-IDF Kconfig...", file=sys.stderr)
     print("[Config Injector]   flash_size='{}'  partition_scheme='{}'".format(args.flash_size, args.partition_scheme), file=sys.stderr)
     print("[Config Injector]   idf_path='{}'".format(args.idf), file=sys.stderr)
+    print("[Config Injector]   loop_stack_size='{}'".format(args.loop_stack_size), file=sys.stderr)
 
     # ------------------------------------------------------------------
     # Détection de changement critique -> invalide le cache de build
@@ -79,6 +112,7 @@ def main():
         "cpu=" + args.cpu_freq,
         "ef=" + extra_flags_clean,
         "log=" + str(args.log_level),
+        "ls=" + str(args.loop_stack_size),
     ])
 
     old_stamp = ""
@@ -106,8 +140,6 @@ def main():
     # ------------------------------------------------------------------
     # Gestion unifiée des niveaux de log
     # ------------------------------------------------------------------
-    # args.log_level peut être : NONE, ERROR, WARN, INFO, DEBUG, VERBOSE
-    # (ou 0..5 selon le format de boards.txt)
     log_level_str = str(args.log_level).strip().upper()
 
     LOG_LEVELS = {
@@ -117,7 +149,6 @@ def main():
         "INFO":    (3, "INFO"),
         "DEBUG":   (4, "DEBUG"),
         "VERBOSE": (5, "VERBOSE"),
-        # Variantes numériques
         "0": (0, "NONE"),
         "1": (1, "ERROR"),
         "2": (2, "WARN"),
@@ -163,7 +194,18 @@ def main():
         "CONFIG_ESPTOOLPY_MONITOR_BAUD_74880B":    None,
         "CONFIG_ESPTOOLPY_MONITOR_BAUD_115200B":   "y",
         "CONFIG_ESPTOOLPY_MONITOR_BAUD_OTHER_VAL": "115200",
-        "CONFIG_ESPTOOLPY_MONITOR_BAUD":           "115200",       
+        "CONFIG_ESPTOOLPY_MONITOR_BAUD":           "115200",
+        
+        # --- AJOUT POUR LE DEBUG DES TÂCHES (uxTaskGetSystemState) ---
+        "CONFIG_FREERTOS_USE_TRACE_FACILITY": "y",
+        "CONFIG_FREERTOS_USE_STATS_FORMATTING_FUNCTIONS": "y",
+        
+        # --- mbedTLS PSK Support (Requirement for WiFiClientSecure) ---
+        "CONFIG_MBEDTLS_PSK_MODES": "y",
+        "CONFIG_MBEDTLS_KEY_EXCHANGE_PSK": "y",
+        "CONFIG_MBEDTLS_KEY_EXCHANGE_DHE_PSK": "y",
+        "CONFIG_MBEDTLS_KEY_EXCHANGE_RSA_PSK": "y",
+        "CONFIG_MBEDTLS_KEY_EXCHANGE_ECDHE_PSK": "y",
     }
 
     # ------------------------------------------------------------------
@@ -268,13 +310,17 @@ def main():
         with open(cmakelists_path, "r") as f:
             cmake_lines = f.readlines()
 
+        # Purge des blocs injectés précédemment (idempotence)
+        cmake_lines = _strip_cmake_blocks(cmake_lines)
+
         injection = []
 
         # --- Arduino loopTask stack size override ---
-        print("[Config Injector] Forcing CONFIG_ARDUINO_LOOP_STACK_SIZE=1536 via CMake", file=sys.stderr)
+        custom_stack_size = args.loop_stack_size
+        print("[Config Injector] Forcing CONFIG_ARDUINO_LOOP_STACK_SIZE={} via CMake".format(custom_stack_size), file=sys.stderr)
         injection.extend([
-            "\n# --- Arduino loopTask Stack Size Override ---\n", 
-            'add_compile_options("-DCONFIG_ARDUINO_LOOP_STACK_SIZE=1536")\n', 
+            "\n# --- Arduino loopTask Stack Size Override ---\n",
+            'add_compile_options("-DCONFIG_ARDUINO_LOOP_STACK_SIZE={}")\n'.format(custom_stack_size),
             "# --------------------------------------------\n\n"
         ])
 

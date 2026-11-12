@@ -2,8 +2,8 @@
 # ESP8266 RTOS SDK - ARDUINO HYBRID PLATFORM CONFIGURATION
 # ==============================================================================
 
-name=ESP8266 RTOS Boards (1.1.0)
-version=1.1.0
+name=ESP8266 RTOS Boards (1.1.2)
+version=1.1.2
 
 # ------------------------------------------------------------------------------
 # 0. BUILD TOOLS PATHS
@@ -40,7 +40,7 @@ compiler.libc.path={runtime.platform.path}/tools/
 # ------------------------------------------------------------------------------
 # 3. BASE COMPILER FLAGS (Mostly bypassed by CMake)
 # ------------------------------------------------------------------------------
-compiler.cpreprocessor.flags=-D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ -D_GNU_SOURCE -DESP8266
+compiler.cpreprocessor.flags=-D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ -D_GNU_SOURCE -DESP8266 -DESP8266_RTOS
 compiler.libraries.ldflags=
 
 compiler.c.flags=-std=gnu17 -Os -g -free -fipa-pta -Werror=return-type -Wpointer-arith -Wno-implicit-function-declaration -Wl,-EL -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals -falign-functions=4 -MMD -ffunction-sections -fdata-sections
@@ -67,13 +67,13 @@ compiler.elf2hex.cmd=dummy.py
 recipe.hooks.prebuild.1.pattern="{python.venv.path}" "{compiler.path}createPreproc.py" -b "{build.path}"
 
 # Linux / macOS
-recipe.hooks.postbuild.1.pattern="{python.venv.path}" "{compiler.path}createTemplate.py" -b "{build.path}" -i "{idf.path}" -x "{xtensa.path}" -l "~/Arduino/libraries" -s "{build.source.path}"
-recipe.hooks.postbuild.2.pattern="{python.venv.path}" "{compiler.path}set_user_values.py" -b "{build.path}" -c "{build.f_cpu}" -fm "{build.flash_mode}" -ff "{build.flash_freq}" -fs "{build.flash_size_arg}" -l "{build.arduhal_log_level}" -v "{build.variant}" -ps "{build.partition_scheme}" -e "{build.extra_flags}"
+recipe.hooks.postbuild.1.pattern="{python.venv.path}" "{compiler.path}createTemplate.py" -b "{build.path}" -i "{idf.path}" -x "{xtensa.path}" -l "{sketchbook.path}/libraries;{build.libraries.path}" -s "{build.source.path}"
+recipe.hooks.postbuild.2.pattern="{python.venv.path}" "{compiler.path}set_user_values.py" -b "{build.path}" -c "{build.f_cpu}" -fm "{build.flash_mode}" -ff "{build.flash_freq}" -fs "{build.flash_size_arg}" -l "{build.arduhal_log_level}" -v "{build.variant}" -ps "{build.partition_scheme}" -ls "{build.loop_stack_size}" -e "{build.extra_flags}"
 recipe.hooks.postbuild.3.pattern="{python.venv.path}" "{compiler.path}compile_linux.py" -b "{build.path}" -i "{idf.path}" -x "{xtensa.path}" -m "{upload.maximum_size}" -f "{build.flash_size_arg}" -C "{cmake.path}" -G "{gcc.path}" -M "{make.path}" -N "{ninja.path}" -P "{python3.path}"
 
 # Windows
-recipe.hooks.postbuild.1.pattern.windows="{python.venv.path}" "{compiler.path}createTemplate.py" -b "{build.path}" -i "{idf.path}" -x "{xtensa.path}" -l "~\Documents\Arduino\libraries" -s "{build.source.path}"
-recipe.hooks.postbuild.2.pattern.windows="{python.venv.path}" "{compiler.path}set_user_values.py" -b "{build.path}" -c "{build.f_cpu}" -fm "{build.flash_mode}" -ff "{build.flash_freq}" -fs "{build.flash_size_arg}" -l "{build.arduhal_log_level}" -v "{build.variant}" -ps "{build.partition_scheme}" -e "{build.extra_flags}"
+recipe.hooks.postbuild.1.pattern.windows="{python.venv.path}" "{compiler.path}createTemplate.py" -b "{build.path}" -i "{idf.path}" -x "{xtensa.path}" -l "{sketchbook.path}/libraries;{build.libraries.path}" -s "{build.source.path}"
+recipe.hooks.postbuild.2.pattern.windows="{python.venv.path}" "{compiler.path}set_user_values.py" -b "{build.path}" -c "{build.f_cpu}" -fm "{build.flash_mode}" -ff "{build.flash_freq}" -fs "{build.flash_size_arg}" -l "{build.arduhal_log_level}" -v "{build.variant}" -ps "{build.partition_scheme}" -ls "{build.loop_stack_size}" -e "{build.extra_flags}"
 recipe.hooks.postbuild.3.pattern.windows="{python.venv.path}" "{compiler.path}compile_windows.py" -b "{build.path}" -i "{idf.path}" -x "{xtensa.path}" -m "{upload.maximum_size}" -f "{build.flash_size_arg}" -C "{cmake.path}" -G "{gcc.path}" -M "{make.path}" -N "{ninja.path}" -P "{python3.path}"
 
 

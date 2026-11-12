@@ -28,6 +28,7 @@ set(CORE_SRCS
   ${CORE_DIR}/esp32-hal-gpio.c
   ${CORE_DIR}/esp32-hal-misc.c
   ${CORE_DIR}/esp32-hal-uart.c
+  ${CORE_DIR}/esp32-hal-ledc.c
   ${CORE_DIR}/Esp.cpp
   ${CORE_DIR}/FunctionalInterrupt.cpp
   ${CORE_DIR}/HardwareSerial.cpp

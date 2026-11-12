@@ -24,9 +24,15 @@
 #include "esp_log.h"
 #include "esp_system.h"
 
+//add me ptach
+#include "esp8266/eagle_soc.h"
+#include "esp8266/pin_mux_register.h"
+#include "esp8266/gpio_register.h"
+
+
 typedef void (*voidFuncPtr)(void);
 typedef void (*voidFuncPtrArg)(void*);
-
+/*
 extern void IRAM_ATTR __pinMode(uint8_t pin, uint8_t mode)
 {
     switch (mode)
@@ -60,6 +66,69 @@ extern void IRAM_ATTR __pinMode(uint8_t pin, uint8_t mode)
     }
  
 }
+*/
+void IRAM_ATTR __pinMode(uint8_t pin, uint8_t mode)
+{
+    if(pin > 16) return;
+    const uint32_t mux[16] = {
+        PERIPHS_IO_MUX_GPIO0_U, PERIPHS_IO_MUX_U0TXD_U, PERIPHS_IO_MUX_GPIO2_U, PERIPHS_IO_MUX_U0RXD_U,
+        PERIPHS_IO_MUX_GPIO4_U, PERIPHS_IO_MUX_GPIO5_U, PERIPHS_IO_MUX_SD_CLK_U, PERIPHS_IO_MUX_SD_DATA0_U,
+        PERIPHS_IO_MUX_SD_DATA1_U, PERIPHS_IO_MUX_SD_DATA2_U, PERIPHS_IO_MUX_SD_DATA3_U, PERIPHS_IO_MUX_SD_CMD_U,
+        PERIPHS_IO_MUX_MTDI_U, PERIPHS_IO_MUX_MTCK_U, PERIPHS_IO_MUX_MTMS_U, PERIPHS_IO_MUX_MTDO_U
+    };
+    const uint32_t func_gpio[16] = {
+        FUNC_GPIO0,FUNC_GPIO1,FUNC_GPIO2,FUNC_GPIO3,FUNC_GPIO4,FUNC_GPIO5,
+        FUNC_GPIO6,FUNC_GPIO7,FUNC_GPIO8,FUNC_GPIO9,FUNC_GPIO10,FUNC_GPIO11,
+        FUNC_GPIO12,FUNC_GPIO13,FUNC_GPIO14,FUNC_GPIO15
+    };
+
+    if(mode == SPECIAL){
+        switch(pin){
+            case 14: PIN_FUNC_SELECT(mux[pin], FUNC_HSPI_CLK); PIN_PULLUP_EN(mux[pin]); break;
+            case 13: PIN_FUNC_SELECT(mux[pin], FUNC_HSPID_MOSI); PIN_PULLUP_EN(mux[pin]); break;
+            case 12: PIN_FUNC_SELECT(mux[pin], FUNC_HSPIQ_MISO); PIN_PULLUP_EN(mux[pin]); break;
+            case 15: PIN_FUNC_SELECT(mux[pin], FUNC_HSPI_CS0); PIN_PULLUP_EN(mux[pin]); break;
+            default: PIN_FUNC_SELECT(mux[pin], func_gpio[pin]); break;
+        }
+    } else {
+        if(pin < 16){
+            PIN_FUNC_SELECT(mux[pin], func_gpio[pin]);
+            if(pin == 15){
+                CLEAR_PERI_REG_MASK(mux[pin], PERIPHS_IO_MUX_PULLDWN);
+                CLEAR_PERI_REG_MASK(mux[pin], PERIPHS_IO_MUX_PULLUP);
+            } else {
+                CLEAR_PERI_REG_MASK(mux[pin], PERIPHS_IO_MUX_PULLDWN);
+            }
+        }
+    }
+
+    switch(mode){
+        case INPUT:
+            gpio_set_direction(pin, GPIO_MODE_INPUT);
+            break;
+        case INPUT_PULLUP:
+            gpio_set_direction(pin, GPIO_MODE_INPUT);
+            gpio_set_pull_mode(pin, GPIO_PULLUP_ONLY);
+            gpio_pullup_en(pin);
+            break;
+        case OUTPUT:
+            gpio_set_direction(pin, GPIO_MODE_OUTPUT);
+            break;
+        case OUTPUT_OPEN_DRAIN:
+            gpio_set_direction(pin, GPIO_MODE_OUTPUT_OD);
+            break;
+        case INPUT_PULLDOWN_16:
+            gpio_set_direction(pin, GPIO_MODE_INPUT);
+            gpio_set_pull_mode(pin, GPIO_PULLDOWN_ONLY);
+            gpio_pulldown_en(pin);
+            break;
+        case SPECIAL:
+            gpio_set_direction(pin, GPIO_MODE_OUTPUT);
+            break;
+        default: break;
+    }
+}
+
 
 extern void IRAM_ATTR __digitalWrite(uint8_t pin, uint8_t val)
 {

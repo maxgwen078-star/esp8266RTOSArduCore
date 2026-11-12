@@ -32,6 +32,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include "esp8266/gpio_register.h"
 
 #include "stdlib_noniso.h"
 #include "binary.h"
@@ -94,9 +95,11 @@
 #define digitalPinToBitMask(pin)    (1UL << (((pin)>31)?((pin)-32):(pin)))
 #define digitalPinToTimer(pin)      (0)
 #define analogInPinToBit(P)         (P)
-#define portOutputRegister(port)    ((volatile uint32_t*)((port)?GPIO_OUT1_REG:GPIO_OUT_REG))
-#define portInputRegister(port)     ((volatile uint32_t*)((port)?GPIO_IN1_REG:GPIO_IN_REG))
-#define portModeRegister(port)      ((volatile uint32_t*)((port)?GPIO_ENABLE1_REG:GPIO_ENABLE_REG))
+// ESP8266 has only one GPIO bank 0..15, plus GPIO16 RTC
+// No GPIO_OUT1_REG / GPIO_IN1_REG on ESP8266
+#define portOutputRegister(port) ((volatile uint32_t*)GPIO_OUT_ADDRESS)
+#define portInputRegister(port)  ((volatile uint32_t*)GPIO_IN_ADDRESS)
+#define portModeRegister(port)   ((volatile uint32_t*)GPIO_ENABLE_ADDRESS)
 
 #define NOT_A_PIN -1
 #define NOT_A_PORT -1
@@ -173,6 +176,37 @@ long random(long);
 
 #define _min(a,b) ((a)<(b)?(a):(b))
 #define _max(a,b) ((a)>(b)?(a):(b))
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+// ----- ANALOG direct API (pas de weak alias) -----
+void analogWrite(uint8_t pin, int val);
+void analogWriteMode(uint8_t pin, int val, bool openDrain);
+void analogWriteFreq(uint32_t freq);
+void analogWriteRange(uint32_t range);
+void analogWriteResolution(int res);
+int analogRead(uint8_t pin);
+void analogReadResolution(int bits);
+void analogSetPinAttenuation(uint8_t pin, uint8_t attenuation);
+
+// compat __analog pour libs qui appellent __analog
+void __analogWrite(uint8_t pin, int val);
+void __analogWriteMode(uint8_t pin, int val, bool openDrain);
+void __analogWriteFreq(uint32_t freq);
+void __analogWriteRange(uint32_t range);
+void __analogWriteResolution(int res);
+int __analogRead(uint8_t pin);
+
+// ledc compat ESP32
+double ledcSetup(uint8_t channel, double freq, uint8_t resolution_bits);
+void ledcAttachPin(uint8_t pin, uint8_t channel);
+void ledcWrite(uint8_t channel, uint32_t duty);
+void ledcDetachPin(uint8_t pin);
+#ifdef __cplusplus
+}
+#endif
 
 #include "pins_arduino.h"
 

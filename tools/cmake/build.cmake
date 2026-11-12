@@ -92,7 +92,7 @@ function(__build_set_default_build_specifications)
     unset(cxx_compile_options)
 
     list(APPEND compile_definitions "-D_GNU_SOURCE"
-                                    "-DARDUINO")
+                                    "-DARDUINO=10819")
 
     list(APPEND compile_options     "-ffunction-sections"
                                     "-fdata-sections"

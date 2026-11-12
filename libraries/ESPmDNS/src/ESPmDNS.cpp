@@ -87,7 +87,6 @@ void MDNSResponder::setInstanceName(String name) {
     }
 }
 
-
 void MDNSResponder::enableArduino(uint16_t port, bool auth){
     mdns_txt_item_t arduTxtData[4] = {
         {(char*)"board"         ,(char*)STR(ARDUINO_VARIANT)},
